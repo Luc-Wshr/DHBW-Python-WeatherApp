@@ -1,2 +1,2 @@
-# dh-python-project
-Python Projekt DHBW-Lörrach Semester 2
+# DHBW Python-Project
+### Wetter-App Projekt in Python 2. Semester
