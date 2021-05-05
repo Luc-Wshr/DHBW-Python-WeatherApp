@@ -3,3 +3,4 @@ matplotlib
 NumPy
 Pandas
 Math
+Pillow
