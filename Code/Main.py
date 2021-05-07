@@ -1,7 +1,15 @@
 # Library imports
 
+from tkinter import *
 import requests, json
 import datetime
+
+# Tkinter
+
+root = Tk()
+root.title("Weather App")
+root.geometry("450x700")
+root['background'] = "white"
 
 # Dates
 
@@ -11,7 +19,7 @@ month_time = Label(root, text = date_time.strftime('%m %B'), bg='white', font=("
 
 # Daytimes (hours)
 
-time_hour = Label(root, text=dt.strftime('%I : %M %p'), bg='white', font=("bold", 15))
+time_hour = Label(root, text=date_time.strftime('%I : %M %p'), bg='white', font=("bold", 15))
 
 # Location research
 
@@ -29,7 +37,9 @@ def name_city():
 
     # Temp
     
+root.mainloop()
 
+""" /------ Auskommentiert ---------/
 
 if x["cod"] != "404":
     y = x["main"]
@@ -50,3 +60,4 @@ if x["cod"] != "404":
   
 else:
     print(" City Not Found ")
+"""
