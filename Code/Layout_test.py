@@ -3,7 +3,6 @@ from PIL import ImageTk, Image
 import json
 import requests
 
-
 # root details
 root = Tk()
 root.title("Weather-App")
@@ -20,9 +19,13 @@ weathermap_frame.grid(row=2, column=2)
 
 
 # functions
+
+def click(event):
+    inpt.config(state = NORMAL)
+    inpt.delete(0, END)
 def search_city(event=None):
     # set city label
-    if city_name.get() != "Search for your city!":
+    if city_name.get() != "":
         city_print.set(city_name.get())
 
     # API call
@@ -48,13 +51,14 @@ logo = Label(root, pady=100, image=img)
 logo.grid(row=0, column=0, sticky=W)
 
 # city input
-input_label = Label(input_frame, text="INPUT:")
+input_label = Label(input_frame, text="Name:")
 
 city_name = StringVar()
 city_name.set("Search for your city!")
 inpt = Entry(input_frame, width=50, textvariable=city_name)
 inpt.bind("<Return>", search_city)  # bind function to ENTER
-
+inpt.config(state=DISABLED)
+inpt.bind("<Button-1>",click)
 input_button = Button(input_frame, text="search",
                       command=search_city)
 
@@ -64,15 +68,14 @@ input_button.grid(row=0, column=3, sticky=E, pady=2.5)
 
 # weather
 city_print = StringVar()
+
 label_city = Label(weather_frame, textvariable=city_print, font=("bold", 25))
 
-temp = Label(weather_frame, padx=10, pady=5, font=(15))
+temp = Label(weather_frame, padx=10, pady=5, font=("bold", 20))
 
-temp_max = Label(
-    weather_frame, padx=10, pady=0)  # autoformatter!?
+temp_max = Label(weather_frame, padx=10, pady=0)
 
-temp_min = Label(
-    weather_frame, padx=10, pady=0)
+temp_min = Label(weather_frame, padx=10, pady=0)
 
 humidity = Label(weather_frame, padx=10, pady=10)
 
@@ -82,11 +85,13 @@ temp_max.grid(row=3, column=0, sticky=W)
 temp_min.grid(row=4, column=0, sticky=W)
 humidity.grid(row=5, column=0, sticky=W)
 
-# weather map
-weathermap_img = ImageTk.PhotoImage(Image.open("map.png"))
-weathermap = Label(root, image=weathermap_img)
-weathermap.place(relx=1.0, rely=1.0, x=0, y=0, anchor=S+E)
+# weather prediction
+
+
+
+# XXX.place(relx=1.0, rely=1.0, x=0, y=0, anchor=S+E)
 
 
 # start window
 root.mainloop()
+
