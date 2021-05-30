@@ -1,6 +1,8 @@
 # Library imports
 
 from tkinter import *
+from tkinter import messagebox
+from PIL import ImageTk, Image
 import requests, json
 import datetime
 
@@ -8,8 +10,17 @@ import datetime
 
 root = Tk()
 root.title("Weather App")
-root.geometry("450x700")
+root.geometry("960x540")
 root['background'] = "white"
+
+# frames
+input_frame = Frame(root)
+weather_frame = Frame(root)
+weathermap_frame = Frame(root)
+
+input_frame.grid(row=1, column=0, columnspan=2, sticky=W)
+weather_frame.grid(row=2, rowspan=2, column=0, columnspan=2, sticky=W)
+weathermap_frame.grid(row=2, column=2)
 
 # Dates
 
@@ -42,6 +53,8 @@ def name_city():
     # Temp
     ytemp = api_result['main']
     temp_now = ytemp['temp']
+    temp_Fahrenheit = (temp_now * 9 / 5) + 32
+    weather_description = api_result['weather'][0]['main']
     humidity = ytemp['humidity']
     minimalTemp = ytemp['temp_min']
     maximalTemp = ytemp['temp_max']
@@ -50,6 +63,11 @@ def name_city():
     z_api = api_result['sys']
     api_country = z_api['country']
     api_city = api_result['name']
+
+# Searchbar + button for Location
+city_search = Button(root, text="Search", command = name_city)
+city_search.grid(row=1, column=1, padx=5, stick=W+E+N+S)
+
 
 
 root.mainloop()
