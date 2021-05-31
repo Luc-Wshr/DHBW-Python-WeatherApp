@@ -51,6 +51,11 @@ def celsius_Fahrenheit_converter():
 
 # click - event (for Placeholder in Searchbar)
 
+def get_time():
+    timeVar = time.strftime("%I:%M:%S %p")
+    label_clock.config(text=timeVar)
+    label_clock.after(200, get_time)
+
 def click(event):
     if(inpt['state'] == DISABLED):
         inpt.config(state = NORMAL)
@@ -130,8 +135,10 @@ input_button.grid(row=0, column=3, sticky=E, pady=2.5)
 # weather
 city_print = StringVar()
 
+label_clock = Label(root, font=("Calibri",20), bg="grey",fg="white")
+
 label_city = Label(weather_frame, textvariable=city_print, font=("bold", 25))
-#--------------------------------------------------------label_country = Label(weather_frame, textvariable=)
+
 temp = Label(weather_frame, padx=10, pady=5, font=("bold", 20))
 
 temp_max = Label(weather_frame, padx=10, pady=0)
@@ -143,7 +150,8 @@ humidity = Label(weather_frame, padx=10, pady=10)
 Converter = Button(input_frame, text = "F°", command = celsius_Fahrenheit_converter)
 
 Favourites = Button(input_frame, text = "✰", command = save_as_favorite )
-
+label_clock.grid(row=0, column=3, sticky=E, pady=2.5,padx=20)
+get_time()
 Converter.grid(row=0, column=4, sticky=E, pady=2.5, padx=25)
 Favourites.grid(row=0, column=5, sticky=E, pady=2.5, padx=15)
 label_city.grid(row=1, column=0, sticky=W, padx=10, pady=10)
