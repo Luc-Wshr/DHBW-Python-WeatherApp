@@ -2,6 +2,8 @@ from tkinter import *
 from PIL import ImageTk, Image
 import json
 import requests
+import time
+from requests import api
 
 # root details
 root = Tk()
@@ -17,20 +19,34 @@ input_frame.grid(row=1, column=0, columnspan=2, sticky=W)
 weather_frame.grid(row=2, rowspan=2, column=0, columnspan=2, sticky=W)
 weathermap_frame.grid(row=2, column=2)
 
+api_key = "12f04c87d16f8e311477842c595d4c77"
 
 # functions
 
+# ------------------- eventuell unnötig
+
+# function combination
+def combine_funcs(*funcs):
+    def combined_func(*args, **kwargs):
+        for f in funcs:
+            f(*args, **kwargs)
+    return combined_func
+
+# ------------------- eventuell unnötig
+
+
+# click - event (for Placeholder in Searchbar)
 def click(event):
     inpt.config(state = NORMAL)
     inpt.delete(0, END)
+
+# city search function
 def search_city(event=None):
     # set city label
     if city_name.get() != "":
         city_print.set(city_name.get())
 
     # API call
-
-    api_key = "12f04c87d16f8e311477842c595d4c77"
     api_request = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                + city_name.get() + "&units=metric&appid="+api_key)
 
@@ -44,6 +60,18 @@ def search_city(event=None):
     temp_min.configure(text="min. " + str(main["temp_min"]) + "°")
     humidity.configure(text="humidity: " + str(main['humidity']) + "%")
 
+# ----------------- HIER NOCH PROBLEME
+
+def weather_forecast():
+    test = api.get()
+    xcoord = test['coord']
+    longtitude = xcoord['lon']
+    latitude = xcoord['lat']
+    forecast_request = requests.get("https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={"
+    + latitude + "}&lon={" + longtitude + "}&dt={" + time + "}&appid={" + api_key + "}")
+    print(forecast_request)
+
+# ----------------- HIER NOCH PROBLEME
 
 # Image
 img = ImageTk.PhotoImage(Image.open("Logo_Python.png"))
@@ -86,7 +114,7 @@ temp_min.grid(row=4, column=0, sticky=W)
 humidity.grid(row=5, column=0, sticky=W)
 
 # weather prediction
-
+Unix_time_now = int(time.time())
 
 
 # XXX.place(relx=1.0, rely=1.0, x=0, y=0, anchor=S+E)
