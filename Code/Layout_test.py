@@ -60,8 +60,12 @@ def celsius_Fahrenheit_converter():
     
 # click - event (for Placeholder in Searchbar)
 def click(event):
-    inpt.config(state = NORMAL)
-    inpt.delete(0, END)
+    if(inpt['state'] == DISABLED):
+        inpt.config(state = NORMAL)
+    #if(inpt['text'] == 'Search for your city!'):
+        inpt.delete(0, END)
+    #else:
+    #    lul = 1
 
 # city search function
 def search_city(event=None):
