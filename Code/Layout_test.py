@@ -23,28 +23,20 @@ api_key = "12f04c87d16f8e311477842c595d4c77"
 
 # functions
 
-# ------------------- eventuell unnötig
-
-# function combination
-def combine_funcs(*funcs):
-    def combined_func(*args, **kwargs):
-        for f in funcs:
-            f(*args, **kwargs)
-    return combined_func
-
-# ------------------- eventuell unnötig
-
 def celsius_Fahrenheit_converter():
     api_request = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                + city_name.get() + "&units=metric&appid="+api_key)
     api = json.loads(api_request.content)
     main = api['main']  # temperatures and humidity
+
+    #Celsius
     if(Converter['text'] == "C°"):
         Converter['text'] = 'F°'
         temp.configure(text=str(main['temp']) + "°C")
         temp_max.configure(text="max. " + str(main["temp_max"]) + "°C")
         temp_min.configure(text="min. " + str(main["temp_min"]) + "°C")
         humidity.configure(text="humidity: " + str(main['humidity']) + "%")
+
     else:
     #Fahrenheit
         Converter['text'] = 'C°'
@@ -56,16 +48,12 @@ def celsius_Fahrenheit_converter():
         temp_min.configure(text="min. " + str(temp_min_Fahrenheit) + "°F")
         humidity.configure(text="humidity: " + str(main['humidity']) + "%")
 
-    #Celsius
-    
 # click - event (for Placeholder in Searchbar)
+
 def click(event):
     if(inpt['state'] == DISABLED):
         inpt.config(state = NORMAL)
-    #if(inpt['text'] == 'Search for your city!'):
         inpt.delete(0, END)
-    #else:
-    #    lul = 1
 
 # city search function
 def search_city(event=None):
@@ -96,7 +84,6 @@ def weather_forecast():
     latitude = xcoord['lat']
     forecast_request = requests.get("https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={"
     + latitude + "}&lon={" + longtitude + "}&dt={" + time + "}&appid={" + api_key + "}")
-    print(forecast_request)
 
 # ----------------- HIER NOCH PROBLEME
 
