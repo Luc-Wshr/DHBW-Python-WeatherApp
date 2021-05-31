@@ -9,7 +9,8 @@ from requests import api
 root = Tk()
 root.title("Weather-App")
 root.geometry('960x540')
-
+root.minsize("620","540")
+root.maxsize("960","540")
 # frames
 input_frame = Frame(root)
 weather_frame = Frame(root)
@@ -20,7 +21,7 @@ weather_frame.grid(row=2, rowspan=2, column=0, columnspan=2, sticky=W)
 weathermap_frame.grid(row=2, column=2)
 
 api_key = "12f04c87d16f8e311477842c595d4c77"
-
+countryName = StringVar()
 # functions
 
 def celsius_Fahrenheit_converter():
@@ -69,12 +70,23 @@ def search_city(event=None):
     main = api['main']  # temperatures and humidity
     weather = api['weather']  # cloudy/sunny etc.
 
+    z_api = api['sys']
+    api_country = z_api['country']
+    country_flag_image = requests.get("https://www.countryflags.io/"+ api_country +"/flat/64.png")
+    img_data = open(("Code/settings/"+api_country+".png"), "wb")
+    img_data.write(country_flag_image.content)
+    img_data.close()
+    countryName.set(api_country)
+    flag = ImageTk.PhotoImage(Image.open("Code/settings/"+ countryName.get() +".png"))
+    flagimg = Label(root, pady=100, image=flag)
+    flagimg.grid(row=0, column=1, sticky=W)
+
     # weather cofiguration
     temp.configure(text=str(main['temp']) + "°C")
     temp_max.configure(text="max. " + str(main["temp_max"]) + "°C")
     temp_min.configure(text="min. " + str(main["temp_min"]) + "°C")
     humidity.configure(text="humidity: " + str(main['humidity']) + "%")
-
+    inpt.config(state=DISABLED)
 # ----------------- HIER NOCH PROBLEME
 
 def weather_forecast():
@@ -86,6 +98,13 @@ def weather_forecast():
     + latitude + "}&lon={" + longtitude + "}&dt={" + time + "}&appid={" + api_key + "}")
 
 # ----------------- HIER NOCH PROBLEME
+
+def save_as_favorite():
+    filePathName = 'Code/settings/fav.json'
+    fav_Name = { "favourite" : city_name.get()}
+    with open(filePathName, 'w') as fp:
+        json.dump(fav_Name, fp)
+
 
 # Image
 img = ImageTk.PhotoImage(Image.open("Logo_Python.png"))
@@ -112,7 +131,7 @@ input_button.grid(row=0, column=3, sticky=E, pady=2.5)
 city_print = StringVar()
 
 label_city = Label(weather_frame, textvariable=city_print, font=("bold", 25))
-
+#--------------------------------------------------------label_country = Label(weather_frame, textvariable=)
 temp = Label(weather_frame, padx=10, pady=5, font=("bold", 20))
 
 temp_max = Label(weather_frame, padx=10, pady=0)
@@ -123,13 +142,25 @@ humidity = Label(weather_frame, padx=10, pady=10)
 
 Converter = Button(input_frame, text = "F°", command = celsius_Fahrenheit_converter)
 
+Favourites = Button(input_frame, text = "✰", command = save_as_favorite )
+
 Converter.grid(row=0, column=4, sticky=E, pady=2.5, padx=25)
+Favourites.grid(row=0, column=5, sticky=E, pady=2.5, padx=15)
 label_city.grid(row=1, column=0, sticky=W, padx=10, pady=10)
 temp.grid(row=2, column=0, sticky=W)
 temp_max.grid(row=3, column=0, sticky=W)
 temp_min.grid(row=4, column=0, sticky=W)
 humidity.grid(row=5, column=0, sticky=W)
 
+# load Settings.json
+with open('Code/settings/fav.json') as f:
+    fav = json.load(f)
+    preload = fav['favourite']
+    city_name.set(preload)
+    search_city()
+flag = ImageTk.PhotoImage(Image.open("Code/settings/"+ countryName.get() +".png"))
+flagimg = Label(root, pady=100, image=flag)
+flagimg.grid(row=0, column=1, sticky=W)
 # weather prediction
 Unix_time_now = int(time.time())
 
