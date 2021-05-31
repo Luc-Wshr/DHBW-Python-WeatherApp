@@ -34,7 +34,30 @@ def combine_funcs(*funcs):
 
 # ------------------- eventuell unnötig
 
+def celsius_Fahrenheit_converter():
+    api_request = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
+                               + city_name.get() + "&units=metric&appid="+api_key)
+    api = json.loads(api_request.content)
+    main = api['main']  # temperatures and humidity
+    if(Converter['text'] == "Celsius"):
+        Converter['text'] = 'Fahrenheit'
+        temp.configure(text=str(main['temp']) + "°C")
+        temp_max.configure(text="max. " + str(main["temp_max"]) + "°C")
+        temp_min.configure(text="min. " + str(main["temp_min"]) + "°C")
+        humidity.configure(text="humidity: " + str(main['humidity']) + "%")
+    else:
+    #Fahrenheit
+        Converter['text'] = 'Celsius'
+        temp_Fahrenheit = round(((main['temp'] * 9 / 5) + 32), 2)
+        temp.configure(text=str(temp_Fahrenheit) + "°F")
+        temp_max_Fahrenheit = round(((main["temp_max"] * 9 / 5) + 32),2)
+        temp_max.configure(text="max. " + str(temp_max_Fahrenheit) + "°F")
+        temp_min_Fahrenheit = round(((main["temp_min"] * 9 / 5) + 32),2)
+        temp_min.configure(text="min. " + str(temp_min_Fahrenheit) + "°F")
+        humidity.configure(text="humidity: " + str(main['humidity']) + "%")
 
+    #Celsius
+    
 # click - event (for Placeholder in Searchbar)
 def click(event):
     inpt.config(state = NORMAL)
@@ -55,9 +78,9 @@ def search_city(event=None):
     weather = api['weather']  # cloudy/sunny etc.
 
     # weather cofiguration
-    temp.configure(text=str(main['temp']) + "°")
-    temp_max.configure(text="max. " + str(main["temp_max"]) + "°")
-    temp_min.configure(text="min. " + str(main["temp_min"]) + "°")
+    temp.configure(text=str(main['temp']) + "°C")
+    temp_max.configure(text="max. " + str(main["temp_max"]) + "°C")
+    temp_min.configure(text="min. " + str(main["temp_min"]) + "°C")
     humidity.configure(text="humidity: " + str(main['humidity']) + "%")
 
 # ----------------- HIER NOCH PROBLEME
@@ -106,6 +129,9 @@ temp_max = Label(weather_frame, padx=10, pady=0)
 temp_min = Label(weather_frame, padx=10, pady=0)
 
 humidity = Label(weather_frame, padx=10, pady=10)
+
+Converter = Button(input_frame, text = "Fahrenheit", command = celsius_Fahrenheit_converter)
+Converter.grid(row=0, column=4, sticky=E, pady=2.5)
 
 label_city.grid(row=1, column=0, sticky=W, padx=10, pady=10)
 temp.grid(row=2, column=0, sticky=W)
