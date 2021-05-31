@@ -39,15 +39,15 @@ def celsius_Fahrenheit_converter():
                                + city_name.get() + "&units=metric&appid="+api_key)
     api = json.loads(api_request.content)
     main = api['main']  # temperatures and humidity
-    if(Converter['text'] == "Celsius"):
-        Converter['text'] = 'Fahrenheit'
+    if(Converter['text'] == "C°"):
+        Converter['text'] = 'F°'
         temp.configure(text=str(main['temp']) + "°C")
         temp_max.configure(text="max. " + str(main["temp_max"]) + "°C")
         temp_min.configure(text="min. " + str(main["temp_min"]) + "°C")
         humidity.configure(text="humidity: " + str(main['humidity']) + "%")
     else:
     #Fahrenheit
-        Converter['text'] = 'Celsius'
+        Converter['text'] = 'C°'
         temp_Fahrenheit = round(((main['temp'] * 9 / 5) + 32), 2)
         temp.configure(text=str(temp_Fahrenheit) + "°F")
         temp_max_Fahrenheit = round(((main["temp_max"] * 9 / 5) + 32),2)
@@ -130,7 +130,7 @@ temp_min = Label(weather_frame, padx=10, pady=0)
 
 humidity = Label(weather_frame, padx=10, pady=10)
 
-Converter = Button(input_frame, text = "Fahrenheit", command = celsius_Fahrenheit_converter)
+Converter = Button(input_frame, text = "F°", command = celsius_Fahrenheit_converter)
 Converter.grid(row=0, column=4, sticky=E, pady=2.5)
 
 label_city.grid(row=1, column=0, sticky=W, padx=10, pady=10)
