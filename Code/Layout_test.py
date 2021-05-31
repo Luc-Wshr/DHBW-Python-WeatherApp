@@ -122,8 +122,8 @@ temp_min = Label(weather_frame, padx=10, pady=0)
 humidity = Label(weather_frame, padx=10, pady=10)
 
 Converter = Button(input_frame, text = "F°", command = celsius_Fahrenheit_converter)
-Converter.grid(row=0, column=4, sticky=E, pady=2.5)
 
+Converter.grid(row=0, column=4, sticky=E, pady=2.5, padx=25)
 label_city.grid(row=1, column=0, sticky=W, padx=10, pady=10)
 temp.grid(row=2, column=0, sticky=W)
 temp_max.grid(row=3, column=0, sticky=W)
