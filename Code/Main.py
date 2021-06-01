@@ -1,22 +1,20 @@
-# Library imports
-
+#----------------------------------------------------------------------------------------Library imports
 from tkinter import *
-from tkinter import messagebox
+import tkinter
 from PIL import ImageTk, Image
 import json
 import requests
-import time, datetime
+import time
 from requests import api
 
-# Tkinter
+#----------------------------------------------------------------------------------------root details
 root = Tk()
 root.title("Weather-App")
 root.geometry('960x540')
 root.minsize("620","540")
 root.maxsize("960","540")
-root['background'] = "white"
 
-# frames
+#----------------------------------------------------------------------------------------frames
 input_frame = Frame(root)
 weather_frame = Frame(root)
 weathermap_frame = Frame(root)
@@ -24,78 +22,157 @@ weathermap_frame = Frame(root)
 input_frame.grid(row=1, column=0, columnspan=2, sticky=W)
 weather_frame.grid(row=2, rowspan=2, column=0, columnspan=2, sticky=W)
 weathermap_frame.grid(row=2, column=2)
+#----------------------------------------------------------------------------------------Key-values
+api_key = "12f04c87d16f8e311477842c595d4c77"
+countryName = StringVar()
+Flagge = StringVar()
+#------------------------------------------------------------------------------------------------------------functions
+def celsius_Fahrenheit_converter():
+    """This function converts the Temperature of the selected Location from Celsius to Fahrenheit and vice-versa """
 
-# Dates
+    api_request = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
+                               + city_name.get() + "&units=metric&appid="+api_key)
+    api = json.loads(api_request.content)
+    main = api['main']  # temperatures and humidity
+    #------------------------------------------------------------------Celsius
+    if(Converter['text'] == "C°"):
+        Converter['text'] = 'F°'
+        temp.configure(text=str(main['temp']) + "°C")
+        temp_max.configure(text="max. " + str(main["temp_max"]) + "°C")
+        temp_min.configure(text="min. " + str(main["temp_min"]) + "°C")
+        humidity.configure(text="humidity: " + str(main['humidity']) + "%")
+    else:
+    #------------------------------------------------------------------Fahrenheit
+        Converter['text'] = 'C°'
+        temp_Fahrenheit = round(((main['temp'] * 9 / 5) + 32), 2)
+        temp.configure(text=str(temp_Fahrenheit) + "°F")
+        temp_max_Fahrenheit = round(((main["temp_max"] * 9 / 5) + 32),2)
+        temp_max.configure(text="max. " + str(temp_max_Fahrenheit) + "°F")
+        temp_min_Fahrenheit = round(((main["temp_min"] * 9 / 5) + 32),2)
+        temp_min.configure(text="min. " + str(temp_min_Fahrenheit) + "°F")
+        humidity.configure(text="humidity: " + str(main['humidity']) + "%")
+        
+#----------------------------------------------------------------------------------------Hour-clock
+def get_time():
+    timeVar = time.strftime("%I:%M:%S %p")
+    label_clock.config(text=timeVar)
+    label_clock.after(200, get_time)
 
-date_time = datetime.datetime.now()
-day = Label(root, text = date_time.strftime('%A--'))
-month_time = Label(root, text = date_time.strftime('%m %B'))
+#----------------------------------------------------------------------------------------click-event
+def click(event):
+    if(inpt['state'] == DISABLED):
+        inpt.config(state = NORMAL)
+        inpt.delete(0, END)
 
-# Daytimes (hours)
+#----------------------------------------------------------------------------------------city-search-function
+def search_city(event=None):
+    """This function searches a selected city on openweathermap.org and requests the weatherdata via API"""
+    #------------------------------------------------------------------set city label
+    if city_name.get() != "":
+        city_print.set(city_name.get())
 
-time_hour = Label(root, text=date_time.strftime('%I : %M %p'))
+    #------------------------------------------------------------------API call
+    api_request = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
+                               + city_name.get() + "&units=metric&appid="+api_key)
+    api = json.loads(api_request.content)
+    main = api['main']
+    weather = api['weather']
 
-# Location research
-
-name_city = StringVar()
-input_city = Entry(root, textvariable = name_city, width=45)
-
-def name_city():
-    
-    # Request API
-    api_key = "12f04c87d16f8e311477842c595d4c77"
-    base_url = "https://api.openweathermap.org/data/2.5/weather?q="
-    request_weather_data = requests.get(base_url + input_city.get() + "&units=metric&appid=" + api_key)
-    api_result = json.loads(request_weather_data.content)
-
-    # Coordinates long, lat
-    xcoord = api_result['coord']
-    longitude = xcoord['lon']
-    latitude = xcoord['lat']
-
-    # Temp
-    ytemp = api_result['main']
-    temp_now = ytemp['temp']
-    temp_Fahrenheit = (temp_now * 9 / 5) + 32
-    weather_description = api_result['weather'][0]['main']
-    humidity = ytemp['humidity']
-    minimalTemp = ytemp['temp_min']
-    maximalTemp = ytemp['temp_max']
-
-    # Country (Bsp. Deutschland) + city(Bsp. Lörrach)
-    z_api = api_result['sys']
+    #------------------------------------------------------------------fetch-and-download-flag-image
+    z_api = api['sys']
     api_country = z_api['country']
-    api_city = api_result['name']
+    country_flag_image = requests.get("https://www.countryflags.io/"+ api_country +"/flat/64.png")
+    img_data = open(("Flags/"+api_country+".png"), "wb")
+    img_data.write(country_flag_image.content)
+    img_data.close()
+    countryName.set(api_country)
+    #------------------------------------------------------------------set flag image
+    flag_adress= ImageTk.PhotoImage(Image.open("Flags/"+api_country +".png"))
+    flag_img = Image.open("Flags/"+api_country +".png")
+    loaded_img = ImageTk.PhotoImage(flag_img)
+    Flag_label = tkinter.Label(image=loaded_img)
+    Flag_label.image = loaded_img
+    Flag_label.grid(row=0, column=1, sticky=W)
+    label_flag = Label(root, pady=100, image=flag_adress)
+    label_flag.grid(row=0, column=2, sticky=W)
+
+    #------------------------------------------------------------------write Weather data into Labels
+    temp.configure(text=str(main['temp']) + "°C")
+    temp_max.configure(text="max. " + str(main["temp_max"]) + "°C")
+    temp_min.configure(text="min. " + str(main["temp_min"]) + "°C")
+    humidity.configure(text="humidity: " + str(main['humidity']) + "%")
+    inpt.config(state=DISABLED)
+
+#----------------------------------------------------------------------------------------Weather forecast
+def weather_forecast():
+    test = api.get()
+    xcoord = test['coord']
+    longtitude = xcoord['lon']
+    latitude = xcoord['lat']
+    forecast_request = requests.get("https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={"
+    + latitude + "}&lon={" + longtitude + "}&dt={" + time + "}&appid={" + api_key + "}")
+
+#----------------------------------------------------------------------------------------set Favourites for standart-view on startup
+def save_as_favorite():
+    filePathName = 'Code/settings/fav.json'
+    fav_Name = { "favourite" : city_name.get()}
+    with open(filePathName, 'w') as fp:
+        json.dump(fav_Name, fp)
 
 
-# Searchbar + button for Location
-city_search = Button(root, text="Search", command = name_city)
-city_search.grid(row=1, column=1, padx=5, stick=W+E+N+S)
+#----------------------------------------------------------------------------------------Image
+img = ImageTk.PhotoImage(Image.open("Logo_Python.png"))
+logo = Label(root, pady=100, image=img)
+logo.grid(row=0, column=0, sticky=W)
 
+#----------------------------------------------------------------------------------------city input
+input_label = Label(input_frame, text="Name:")
+city_name = StringVar()
+city_name.set("Search for your city!")
+inpt = Entry(input_frame, width=50, textvariable=city_name)
+inpt.bind("<Return>", search_city)  # bind function to ENTER
+inpt.config(state=DISABLED)
+inpt.bind("<Button-1>",click)
+input_button = Button(input_frame, text="search",
+                      command=search_city)
+input_label.grid(row=0, column=1, sticky=W, padx=10, pady=5)
+inpt.grid(row=0, column=2, sticky=E, padx=10, pady=5)
+input_button.grid(row=0, column=3, sticky=E, pady=2.5)
 
+#----------------------------------------------------------------------------------------weather
+city_print = StringVar()
+label_country = Label(weather_frame, textvariable=countryName, font=("bold", 25))
+label_clock = Label(root, font=("Calibri",20), bg="grey",fg="white")
+label_city = Label(weather_frame, textvariable=city_print, font=("bold", 25))
+temp = Label(weather_frame, padx=10, pady=5, font=("bold", 20))
+temp_max = Label(weather_frame, padx=10, pady=0)
+temp_min = Label(weather_frame, padx=10, pady=0)
+humidity = Label(weather_frame, padx=10, pady=10)
+Converter = Button(input_frame, text = "F°", command = celsius_Fahrenheit_converter)
+Favourites = Button(input_frame, text = "✰", command = save_as_favorite )
 
+label_country.grid(row =1, column =2, sticky = E, pady = 2.5 , padx = 10)
+label_clock.grid(row=0, column=5, sticky=N, pady=2.5,padx=20)
+Converter.grid(row=0, column=4, sticky=E, pady=2.5, padx=25)
+Favourites.grid(row=0, column=5, sticky=E, pady=2.5, padx=15)
+label_city.grid(row=1, column=0, sticky=W, padx=10, pady=10)
+temp.grid(row=2, column=0, sticky=W)
+temp_max.grid(row=3, column=0, sticky=W)
+temp_min.grid(row=4, column=0, sticky=W)
+humidity.grid(row=5, column=0, sticky=W)
+
+#----------------------------------------------------------------------------------------load Settings.json
+with open('Code/settings/fav.json') as f:
+    fav = json.load(f)
+    preload = fav['favourite']
+    city_name.set(preload)
+    search_city()
+
+#----------------------------------------------------------------------------------------weather prediction
+Unix_time_now = int(time.time())
+
+get_time()
+
+#----------------------------------------------------------------------------------------start window
 root.mainloop()
 
-
-""" /------ Auskommentiert ---------/
-
-if x["cod"] != "404":
-    y = x["main"]
-    current_temperature = y["temp"]
-    current_pressure = y["pressure"]
-    current_humidiy = y["humidity"]
-    z = x["weather"]
-    weather_description = z[0]["description"]
-  
-    print(" Temperature (in kelvin unit) = " +
-                    str(current_temperature) + 
-          "\n atmospheric pressure (in hPa unit) = " +
-                    str(current_pressure) +
-          "\n humidity (in percentage) = " +
-                    str(current_humidiy) +
-          "\n description = " +
-                    str(weather_description))
-  
-else:
-    print(" City Not Found ")
-"""
