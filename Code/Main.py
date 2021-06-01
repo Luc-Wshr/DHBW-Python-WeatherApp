@@ -3,14 +3,17 @@
 from tkinter import *
 from tkinter import messagebox
 from PIL import ImageTk, Image
-import requests, json
-import datetime
+import json
+import requests
+import time, datetime
+from requests import api
 
 # Tkinter
-
 root = Tk()
-root.title("Weather App")
-root.geometry("960x540")
+root.title("Weather-App")
+root.geometry('960x540')
+root.minsize("620","540")
+root.maxsize("960","540")
 root['background'] = "white"
 
 # frames
@@ -47,7 +50,7 @@ def name_city():
 
     # Coordinates long, lat
     xcoord = api_result['coord']
-    longtitude = xcoord['lon']
+    longitude = xcoord['lon']
     latitude = xcoord['lat']
 
     # Temp
@@ -64,6 +67,7 @@ def name_city():
     api_country = z_api['country']
     api_city = api_result['name']
 
+
 # Searchbar + button for Location
 city_search = Button(root, text="Search", command = name_city)
 city_search.grid(row=1, column=1, padx=5, stick=W+E+N+S)
@@ -71,6 +75,7 @@ city_search.grid(row=1, column=1, padx=5, stick=W+E+N+S)
 
 
 root.mainloop()
+
 
 """ /------ Auskommentiert ---------/
 
