@@ -6,7 +6,7 @@ import json
 import requests
 import time
 from requests import api
-
+from tkinter import messagebox
 #----------------------------------------------------------------------------------------root details
 root = Tk()
 root.title("Weather-App")
@@ -75,33 +75,41 @@ def search_city(event=None):
     api_request = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                + city_name.get() + "&units=metric&appid="+api_key)
     api = json.loads(api_request.content)
-    main = api['main']
-    weather = api['weather']
+    if api['cod'] != '404':
+        main = api['main']
+        weather = api['weather']
+        #------------------------------------------------------------------fetch-and-download-flag-image
+        z_api = api['sys']
+        api_country = z_api['country']
+        country_flag_image = requests.get("https://www.countryflags.io/"+ api_country +"/flat/64.png")
+        img_data = open(("Flags/"+api_country+".png"), "wb")
+        img_data.write(country_flag_image.content)
+        img_data.close()
+        countryName.set(api_country)
+        #------------------------------------------------------------------set flag image
+        flag_adress= ImageTk.PhotoImage(Image.open("Flags/"+api_country +".png"))
+        flag_img = Image.open("Flags/"+api_country +".png")
+        loaded_img = ImageTk.PhotoImage(flag_img)
+        Flag_label = tkinter.Label(image=loaded_img)
+        Flag_label.image = loaded_img
+        Flag_label.grid(row=0, column=1, sticky=W)
+        label_flag = Label(root, pady=100, image=flag_adress)
+        label_flag.grid(row=0, column=2, sticky=W)
 
-    #------------------------------------------------------------------fetch-and-download-flag-image
-    z_api = api['sys']
-    api_country = z_api['country']
-    country_flag_image = requests.get("https://www.countryflags.io/"+ api_country +"/flat/64.png")
-    img_data = open(("Flags/"+api_country+".png"), "wb")
-    img_data.write(country_flag_image.content)
-    img_data.close()
-    countryName.set(api_country)
-    #------------------------------------------------------------------set flag image
-    flag_adress= ImageTk.PhotoImage(Image.open("Flags/"+api_country +".png"))
-    flag_img = Image.open("Flags/"+api_country +".png")
-    loaded_img = ImageTk.PhotoImage(flag_img)
-    Flag_label = tkinter.Label(image=loaded_img)
-    Flag_label.image = loaded_img
-    Flag_label.grid(row=0, column=1, sticky=W)
-    label_flag = Label(root, pady=100, image=flag_adress)
-    label_flag.grid(row=0, column=2, sticky=W)
+        #------------------------------------------------------------------write Weather data into Labels
+        weather_today = weather[0]['main']
+        if(weather_today == 'Rain'):
+            messagebox.showwarning("Weather forecast","Take an umbrella with you today! it's going to rain")
 
-    #------------------------------------------------------------------write Weather data into Labels
-    temp.configure(text=str(main['temp']) + "°C")
-    temp_max.configure(text="max. " + str(main["temp_max"]) + "°C")
-    temp_min.configure(text="min. " + str(main["temp_min"]) + "°C")
-    humidity.configure(text="humidity: " + str(main['humidity']) + "%")
-    inpt.config(state=DISABLED)
+        #------------------------------------------------------------------Weather-Notifications
+        temp.configure(text=str(main['temp']) + "°C")
+        temp_max.configure(text="max. " + str(main["temp_max"]) + "°C")
+        temp_min.configure(text="min. " + str(main["temp_min"]) + "°C")
+        humidity.configure(text="humidity: " + str(main['humidity']) + "%")
+        weather_description.configure(text=weather_today)
+        inpt.config(state=DISABLED)
+    else:
+        countryName.set(" City not found")
 
 #----------------------------------------------------------------------------------------Weather forecast
 def weather_forecast():
@@ -145,12 +153,14 @@ label_country = Label(weather_frame, textvariable=countryName, font=("bold", 25)
 label_clock = Label(root, font=("Calibri",20), bg="grey",fg="white")
 label_city = Label(weather_frame, textvariable=city_print, font=("bold", 25))
 temp = Label(weather_frame, padx=10, pady=5, font=("bold", 20))
-temp_max = Label(weather_frame, padx=10, pady=0)
-temp_min = Label(weather_frame, padx=10, pady=0)
-humidity = Label(weather_frame, padx=10, pady=10)
+weather_description = Label(weather_frame, padx=10, pady=5, font=("Calibri",15))
+temp_max = Label(weather_frame, padx=10, pady=0, font=("Calibri", 10))
+temp_min = Label(weather_frame, padx=10, pady=0, font=("Calibri", 10))
+humidity = Label(weather_frame, padx=10, pady=10, font=("Calibri", 10))
 Converter = Button(input_frame, text = "F°", command = celsius_Fahrenheit_converter)
 Favourites = Button(input_frame, text = "✰", command = save_as_favorite )
 
+weather_description.grid(row=2, column=1, sticky=W)
 label_country.grid(row =1, column =2, sticky = E, pady = 2.5 , padx = 10)
 label_clock.grid(row=0, column=5, sticky=N, pady=2.5,padx=20)
 Converter.grid(row=0, column=4, sticky=E, pady=2.5, padx=25)
