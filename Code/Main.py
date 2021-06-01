@@ -54,12 +54,14 @@ def celsius_Fahrenheit_converter():
         
 #----------------------------------------------------------------------------------------Hour-clock
 def get_time():
+    """This function gets the current Time and displays it in Hour-Minute-Second in American Time AM/PM"""
     timeVar = time.strftime("%I:%M:%S %p")
     label_clock.config(text=timeVar)
     label_clock.after(200, get_time)
 
 #----------------------------------------------------------------------------------------click-event
 def click(event):
+    """This function makes a Placeholder text for the City-Searchfield"""
     if(inpt['state'] == DISABLED):
         inpt.config(state = NORMAL)
         inpt.delete(0, END)
@@ -113,6 +115,7 @@ def search_city(event=None):
 
 #----------------------------------------------------------------------------------------Weather forecast
 def weather_forecast():
+    """This function gets the Weather forecast for the next few days"""
     test = api.get()
     xcoord = test['coord']
     longtitude = xcoord['lon']
@@ -122,6 +125,7 @@ def weather_forecast():
 
 #----------------------------------------------------------------------------------------set Favourites for standart-view on startup
 def save_as_favorite():
+    """This function saves a Favourite to a json file to have it as Standart startup"""
     filePathName = 'Code/settings/fav.json'
     fav_Name = { "favourite" : city_name.get()}
     with open(filePathName, 'w') as fp:
