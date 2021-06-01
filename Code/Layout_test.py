@@ -1,5 +1,6 @@
 #----------------------------------------------------------------------------------------Library imports
 from tkinter import *
+import tkinter
 from PIL import ImageTk, Image
 import json
 import requests
@@ -24,7 +25,7 @@ weathermap_frame.grid(row=2, column=2)
 #----------------------------------------------------------------------------------------Key-values
 api_key = "12f04c87d16f8e311477842c595d4c77"
 countryName = StringVar()
-
+Flagge = StringVar()
 #------------------------------------------------------------------------------------------------------------functions
 def celsius_Fahrenheit_converter():
     """This function converts the Temperature of the selected Location from Celsius to Fahrenheit and vice-versa """
@@ -81,18 +82,19 @@ def search_city(event=None):
     z_api = api['sys']
     api_country = z_api['country']
     country_flag_image = requests.get("https://www.countryflags.io/"+ api_country +"/flat/64.png")
-    img_data = open(("Code/settings/"+api_country+".png"), "wb")
+    img_data = open(("Flags/"+api_country+".png"), "wb")
     img_data.write(country_flag_image.content)
     img_data.close()
     countryName.set(api_country)
-
     #------------------------------------------------------------------set flag image
-    flagimg = Label(root, pady=100, image=flag)
-    flagimg.grid(row=0, column=1, sticky=W)
-    Flag_image = "Code/settings/"+ countryName.get() +".png"
-    print(countryName.get())
-    flagimg.configure(image=ImageTk.PhotoImage(Image.open(Flag_image)))
-    flagimg['image'] = ImageTk.PhotoImage(Image.open(Flag_image))
+    flag_adress= ImageTk.PhotoImage(Image.open("Flags/"+api_country +".png"))
+    flag_img = Image.open("Flags/"+api_country +".png")
+    loaded_img = ImageTk.PhotoImage(flag_img)
+    Flag_label = tkinter.Label(image=loaded_img)
+    Flag_label.image = loaded_img
+    Flag_label.grid(row=0, column=1, sticky=W)
+    label_flag = Label(root, pady=100, image=flag_adress)
+    label_flag.grid(row=0, column=2, sticky=W)
 
     #------------------------------------------------------------------write Weather data into Labels
     temp.configure(text=str(main['temp']) + "°C")
@@ -139,6 +141,7 @@ input_button.grid(row=0, column=3, sticky=E, pady=2.5)
 
 #----------------------------------------------------------------------------------------weather
 city_print = StringVar()
+label_country = Label(weather_frame, textvariable=countryName, font=("bold", 25))
 label_clock = Label(root, font=("Calibri",20), bg="grey",fg="white")
 label_city = Label(weather_frame, textvariable=city_print, font=("bold", 25))
 temp = Label(weather_frame, padx=10, pady=5, font=("bold", 20))
@@ -148,7 +151,8 @@ humidity = Label(weather_frame, padx=10, pady=10)
 Converter = Button(input_frame, text = "F°", command = celsius_Fahrenheit_converter)
 Favourites = Button(input_frame, text = "✰", command = save_as_favorite )
 
-label_clock.grid(row=0, column=3, sticky=E, pady=2.5,padx=20)
+label_country.grid(row =1, column =2, sticky = E, pady = 2.5 , padx = 10)
+label_clock.grid(row=0, column=5, sticky=N, pady=2.5,padx=20)
 Converter.grid(row=0, column=4, sticky=E, pady=2.5, padx=25)
 Favourites.grid(row=0, column=5, sticky=E, pady=2.5, padx=15)
 label_city.grid(row=1, column=0, sticky=W, padx=10, pady=10)
@@ -163,7 +167,6 @@ with open('Code/settings/fav.json') as f:
     preload = fav['favourite']
     city_name.set(preload)
     search_city()
-flag = ImageTk.PhotoImage(Image.open("Code/settings/"+ countryName.get() +".png"))
 
 #----------------------------------------------------------------------------------------weather prediction
 Unix_time_now = int(time.time())
