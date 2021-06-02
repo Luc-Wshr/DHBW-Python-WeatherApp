@@ -1,12 +1,11 @@
 #----------------------------------------------------------------------------------------Library imports
 from tkinter import *
-import tkinter
 from PIL import ImageTk, Image
-import json
-import requests
-import time
+from datetime import date
 from requests import api
 from tkinter import messagebox
+import tkinter,json, requests, time
+
 #----------------------------------------------------------------------------------------root details
 root = Tk()
 root.title("Weather-App")
@@ -57,6 +56,8 @@ def celsius_Fahrenheit_converter():
 def get_time():
     """This function gets the current Time and displays it in Hour-Minute-Second in American Time AM/PM"""
     timeVar = time.strftime("%I:%M:%S %p")
+    Date_today = date.today()
+    label_date.config(text=Date_today)
     label_clock.config(text=timeVar)
     label_clock.after(200, get_time)
 
@@ -156,9 +157,10 @@ input_button.grid(row=0, column=3, sticky=E, pady=2.5)
 city_print = StringVar()
 label_country = Label(weather_frame, textvariable=countryName, font=("bold", 25),bg="light grey")
 label_clock = Label(root, font=("Calibri",20), bg="grey",fg="white")
+label_date = Label(root, font=("Calibri",20), bg="grey",fg="white")
 label_city = Label(weather_frame, textvariable=city_print, font=("bold", 25),bg="light grey")
 temp = Label(weather_frame, padx=10, pady=5, font=("bold", 20),bg="light grey")
-weather_description = Label(weather_frame, padx=10, pady=5, font=("Calibri",15),bg="light grey")
+weather_description = Label(weather_frame, padx=10, pady=5, font=("Calibri",15),bg="light blue", borderwidth = 1, relief = "solid")
 temp_max = Label(weather_frame, padx=10, pady=0, font=("Calibri", 10),bg="light grey")
 temp_min = Label(weather_frame, padx=10, pady=0, font=("Calibri", 10),bg="light grey")
 humidity = Label(weather_frame, padx=10, pady=10, font=("Calibri", 10),bg="light grey")
@@ -167,6 +169,7 @@ Favourites = Button(input_frame, text = "✰", command = save_as_favorite )
 
 weather_description.grid(row=2, column=1, sticky=W)
 label_country.grid(row =1, column =2, sticky = E, pady = 2.5 , padx = 10)
+label_date.grid(row=1, column=5, sticky=N, padx=20)
 label_clock.grid(row=0, column=5, sticky=N, pady=2.5,padx=20)
 Converter.grid(row=0, column=4, sticky=E, pady=2.5, padx=25)
 Favourites.grid(row=0, column=5, sticky=E, pady=2.5, padx=15)
