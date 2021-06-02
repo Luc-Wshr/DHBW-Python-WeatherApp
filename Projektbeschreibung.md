@@ -23,8 +23,9 @@ Das Programm soll abhängig von den anstehenden Wetterbedingungen für den Tag B
 - Bluetooth Einbindung 
 
 ## Nice-to-have:
-
+- Uhrzeit und Datum wird angezeigt
 - Temperatur für den gewählten Standort 
 - Temperaturumrechnung von C° in F° 
 - Wetter-Historie (letzten 7 Tagen/1 Mona, wie war das Wetter)
-- Wettervergleiche - Durchschnittstemperatur Vergleich letzter Monat/Jahr
+- Es kann ein Favoriten-Standort angelegt werden, welchem beim Start sofort alle Daten anzeigt 
+- Es wird die Flagge des jeweiligen Landen angezeigt, damit man Orte wie Paris - Frankreich und Paris - USA unterscheiden kann auf den ersten Blick
