@@ -113,7 +113,7 @@ def search_city(event=None):
         weather_description.configure(text=weather_today)
         inpt.config(state=DISABLED)
     else:
-        countryName.set(" City not found")
+        city_print.set(" City not found")
 
 #----------------------------------------------------------------------------------------Weather forecast
 def weather_forecast():
