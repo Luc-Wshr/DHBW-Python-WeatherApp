@@ -10,7 +10,7 @@
 
 - Nice-to-have:
   - [x] Uhrzeit und Datum wird angezeigt
-  - [x] Temperatur für den gewählten Standort
+  - [x] Temperatur und Luftfeuchtigkeit für den gewählten Standort
   - [x] Temperaturumrechnung von C° in F°
   - [ ] Wetter-Historie (letzten 7 Tagen/1 Mona, wie war das Wetter)
   - [x] Es kann ein Favoriten-Standort angelegt werden, welchem beim Start sofort alle Daten anzeigt
