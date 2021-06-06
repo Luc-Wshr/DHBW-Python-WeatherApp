@@ -25,7 +25,7 @@ weathermap_frame.grid(row=2, column=2)
 #----------------------------------------------------------------------------------------Key-values
 api_key = "12f04c87d16f8e311477842c595d4c77"
 countryName = StringVar()
-Flagge = StringVar()
+
 #------------------------------------------------------------------------------------------------------------functions
 def celsius_Fahrenheit_converter():
     """This function converts the Temperature of the selected Location from Celsius to Fahrenheit and vice-versa """
@@ -135,7 +135,7 @@ def save_as_favorite():
 
 
 #----------------------------------------------------------------------------------------Image
-img = ImageTk.PhotoImage(Image.open("Logo_Python.png"))
+img = ImageTk.PhotoImage(Image.open("Code/settings/Logo_Python.png"))
 logo = Label(root, pady=100, image=img)
 logo.grid(row=0, column=0, sticky=W)
 
