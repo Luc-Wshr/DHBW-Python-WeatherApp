@@ -12,6 +12,6 @@
   - [x] Uhrzeit und Datum wird angezeigt
   - [x] Temperatur und Luftfeuchtigkeit für den gewählten Standort
   - [x] Temperaturumrechnung von C° in F°
-  - [ ] Wetter-Historie (letzten 7 Tagen/1 Mona, wie war das Wetter)
+  - [ ] Wetter-Historie der letzten 5 Tage (wie war das Wetter gestern/vorgestern etc.)
   - [x] Es kann ein Favoriten-Standort angelegt werden, welchem beim Start sofort alle Daten anzeigt
   - [x] Es wird die Flagge des jeweiligen Landen angezeigt, damit man Orte wie Paris - Frankreich und Paris - USA unterscheiden kann auf den ersten Blick
