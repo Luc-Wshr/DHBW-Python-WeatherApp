@@ -17,11 +17,13 @@ root.maxsize("960","540")
 input_frame = Frame(root)
 weather_frame = Frame(root)
 weathermap_frame = Frame(root)
+eight_day_forecast_frame = Frame(root)
 
 weather_frame['background']="light grey"
 input_frame.grid(row=1, column=0, columnspan=2, sticky=W)
 weather_frame.grid(row=2, rowspan=2, column=0, columnspan=2, sticky=W)
 weathermap_frame.grid(row=2, column=2)
+eight_day_forecast_frame.grid(row=2, column=4)
 #----------------------------------------------------------------------------------------Key-values
 api_key = "12f04c87d16f8e311477842c595d4c77"
 countryName = StringVar()
