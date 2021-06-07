@@ -24,7 +24,7 @@ Now install all packages needed.
 pip install -r Organisation/requirements.txt
 ```
 
-Keep in mind to update `requirements.txt` when adding dependencies. To get a list of all current dependencies run this command:
+Keep in mind to update `requirements.txt` when adding dependencies. To get a list of all current dependencies run:
 ```shell 
 pip freeze
 ```
