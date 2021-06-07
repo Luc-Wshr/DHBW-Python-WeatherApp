@@ -3,7 +3,7 @@
 ## TODO-List
 - In-Scope:
   - [x] Benachrichtungen zu bedingten Wetterbedingungen
-  - [ ] GUI zur Anzeige der Wettervorhersage (7 Tage)
+  - [x] GUI zur Anzeige der Wettervorhersage (8 Tage)
   - [ ] Wetterstatistik Niederschlag/etc...
   - [x] Standortbezogene Wettervorhersage
   - [x] Benutzer kann zwischen Standorten wechseln
