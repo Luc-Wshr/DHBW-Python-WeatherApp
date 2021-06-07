@@ -111,6 +111,7 @@ def search_city(event=None):
         temp_min.configure(text="min. " + str(main["temp_min"]) + "°C")
         humidity.configure(text="humidity: " + str(main['humidity']) + "%")
         weather_description.configure(text=weather_today)
+        eight_day_forecast()
         inpt.config(state=DISABLED)
     else:
         city_print.set(" City not found")
@@ -124,6 +125,93 @@ def weather_forecast():
     latitude = xcoord['lat']
     forecast_request = requests.get("https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={"
     + latitude + "}&lon={" + longtitude + "}&dt={" + time + "}&appid={" + api_key + "}")
+    
+#----------------------------------------------------------------------------------------8 Day Forecast
+def eight_day_forecast():
+    api_request_city = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
+                               + city_name.get() + "&units=metric&appid="+api_key)
+    api_city = json.loads(api_request_city.content)
+    location_x = api_city["coord"]["lon"]
+    location_y = api_city["coord"]["lat"]
+
+    api_request_forecast = requests.get("https://api.openweathermap.org/data/2.5/onecall?lat=" + str(location_y) + "&lon=" + str(location_x) + "&exclude=current,minutely,hourly&appid=" +api_key)
+    api = json.loads(api_request_forecast.content)
+    weekdays = {
+        0:"Mon",
+        1:"Tue",
+        2:"Wed",
+        3:"Thu",
+        4:"Fri",
+        5:"Sat",
+        6:"Sun"
+    }
+    months = {
+        1:"Jan",
+        2:"Feb",
+        3:"Mar",
+        4:"Apr",
+        5:"May",
+        6:"Jun",
+        7:"Jul",
+        8:"Aug",
+        9:"Sep",
+        10:"Oct",
+        11:"Nov",
+        12:"Dec",
+    }
+    today = date.today()
+    today_month = today.month
+    today_day = today.day
+    today_weekday = today.weekday()
+
+    #icon = requests.get("http://openweathermap.org/img/wn/" + api["daily"][0]["weather"][0]["icon"] + "@2x.png")
+    #icon_data = open(("Icons/"+api["daily"][0]["weather"][0]["icon"]+".png"), "wb")
+    #icon_data.write(icon.content)
+    #icon_data.close()
+    #icon_adress= ImageTk.PhotoImage(Image.open("Icons/"+api["daily"][0]["weather"][0]["icon"] +".png"))
+    #icon_img = Image.open("Icons/"+api["daily"][0]["weather"][0]["icon"] +".png")
+    #loaded_img = ImageTk.PhotoImage(icon_img)
+    #Icon_label = tkinter.Label(image=loaded_img)
+    #Icon_label.image = loaded_img
+    
+
+    label_day_one.configure(text=str(weekdays[today_weekday]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+                            str(round(api["daily"][0]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][0]["temp"]["min"] - 273.13)) 
+                            + "°C     " + api["daily"][0]["weather"][0]["description"])
+    label_day_two.configure(text=str(weekdays[(today_weekday + 1) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+                            str(round(api["daily"][1]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][1]["temp"]["min"] - 273.13)) 
+                            + "°C     " + api["daily"][1]["weather"][0]["description"])
+    label_day_three.configure(text=str(weekdays[(today_weekday + 2) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+                            str(round(api["daily"][2]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][2]["temp"]["min"] - 273.13)) 
+                            + "°C     " + api["daily"][2]["weather"][0]["description"])
+    label_day_four.configure(text=str(weekdays[(today_weekday + 3) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+                            str(round(api["daily"][3]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][3]["temp"]["min"] - 273.13)) 
+                            + "°C     " + api["daily"][3]["weather"][0]["description"])
+    label_day_five.configure(text=str(weekdays[(today_weekday + 4) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+                            str(round(api["daily"][4]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][4]["temp"]["min"] - 273.13)) 
+                            + "°C     " + api["daily"][4]["weather"][0]["description"])
+    label_day_six.configure(text=str(weekdays[(today_weekday + 5) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+                            str(round(api["daily"][5]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][5]["temp"]["min"] - 273.13)) 
+                            + "°C     " + api["daily"][5]["weather"][0]["description"])
+    label_day_seven.configure(text=str(weekdays[(today_weekday + 6) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+                            str(round(api["daily"][6]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][6]["temp"]["min"] - 273.13)) 
+                            + "°C     " + api["daily"][6]["weather"][0]["description"])
+    label_day_eight.configure(text=str(weekdays[(today_weekday + 7) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+                            str(round(api["daily"][7]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][7]["temp"]["min"] - 273.13)) 
+                            + "°C     " + api["daily"][7]["weather"][0]["description"])
+
+#---------------------------------------------------------------------------------------Weather map
+def weather_map():
+    api_request = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
+                               + city_name.get() + "&units=metric&appid="+api_key)
+    api = json.loads(api_request.content)
+    location_x = api["coord"]["lon"]
+    location_y = api["coord"]["lat"]
+    #m = folium.Map(location=[location_x, location_y])
+    #m.save("MyMap.html")
+    #print(m)
+    #weathermaplabel.configure(image=m)
+
 
 #----------------------------------------------------------------------------------------set Favourites for standart-view on startup
 def save_as_favorite():
@@ -178,6 +266,38 @@ temp.grid(row=2, column=0, sticky=W)
 temp_max.grid(row=3, column=0, sticky=W)
 temp_min.grid(row=4, column=0, sticky=W)
 humidity.grid(row=5, column=0, sticky=W)
+
+#----------------------------------------------------------------------------------------7 Day Forecast
+label_eight_day_forecast = Label(eight_day_forecast_frame, text="8-day forecast",font=("bold", 18))
+label_day_one = Label(eight_day_forecast_frame, font=("Calibri", 14))
+label_day_two = Label(eight_day_forecast_frame, font=("Calibri", 14))
+label_day_three = Label(eight_day_forecast_frame, font=("Calibri", 14))
+label_day_four = Label(eight_day_forecast_frame, font=("Calibri", 14))
+label_day_five = Label(eight_day_forecast_frame, font=("Calibri", 14))
+label_day_six = Label(eight_day_forecast_frame, font=("Calibri", 14))
+label_day_seven = Label(eight_day_forecast_frame, font=("Calibri", 14))
+label_day_eight = Label(eight_day_forecast_frame, font=("Calibri", 14))
+
+label_eight_day_forecast.grid(row=0, column=0, sticky=W)
+label_day_one.grid(row=1, column=0, sticky=W)
+label_day_two.grid(row=2, column=0, sticky=W)
+label_day_three.grid(row=3, column=0, sticky=W)
+label_day_four.grid(row=4, column=0, sticky=W)
+label_day_five.grid(row=5, column=0, sticky=W)
+label_day_six.grid(row=6, column=0, sticky=W)
+label_day_seven.grid(row=7, column=0, sticky=W)
+label_day_eight.grid(row=8, column=0, sticky=W)
+
+#----------------------------------------------------------------------------------------Weather Map
+#weathermaplabel = Label(weathermap_frame)
+#weathermap = Button(weathermap_frame, text="test", command = weather_map)
+
+
+
+#weathermaplabel.grid(row=0, column=1)
+#weathermap.grid(row=1, column=1)
+
+
 
 #----------------------------------------------------------------------------------------load Settings.json
 with open('Code/settings/fav.json') as f:
