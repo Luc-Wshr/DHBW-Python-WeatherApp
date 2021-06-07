@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------------------Library imports
 from tkinter import *
 from PIL import ImageTk, Image
-from datetime import date
+from datetime import date, timedelta
 from requests import api
 from tkinter import messagebox
 import tkinter,json, requests, time
@@ -118,17 +118,7 @@ def search_city(event=None):
     else:
         city_print.set(" City not found")
 
-#----------------------------------------------------------------------------------------Weather forecast
-def weather_forecast():
-    """This function gets the Weather forecast for the next few days"""
-    test = api.get()
-    xcoord = test['coord']
-    longtitude = xcoord['lon']
-    latitude = xcoord['lat']
-    forecast_request = requests.get("https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={"
-    + latitude + "}&lon={" + longtitude + "}&dt={" + time + "}&appid={" + api_key + "}")
-    
-#----------------------------------------------------------------------------------------8 Day Forecast
+#----------------------------------------------------------------------------------------8 Day Weather Forecast
 def eight_day_forecast():
     api_request_city = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                + city_name.get() + "&units=metric&appid="+api_key)
@@ -165,7 +155,13 @@ def eight_day_forecast():
     today_month = today.month
     today_day = today.day
     today_weekday = today.weekday()
-
+    days = []
+    for i in range(7):
+        tdelta = timedelta(days=1 + i)
+        new_time = today + tdelta
+        new_time_day = new_time.day
+        days.append(new_time_day)
+    print(days)
     #icon = requests.get("http://openweathermap.org/img/wn/" + api["daily"][0]["weather"][0]["icon"] + "@2x.png")
     #icon_data = open(("Icons/"+api["daily"][0]["weather"][0]["icon"]+".png"), "wb")
     #icon_data.write(icon.content)
@@ -180,25 +176,25 @@ def eight_day_forecast():
     label_day_one.configure(text=str(weekdays[today_weekday]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
                             str(round(api["daily"][0]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][0]["temp"]["min"] - 273.13)) 
                             + "°C     " + api["daily"][0]["weather"][0]["description"])
-    label_day_two.configure(text=str(weekdays[(today_weekday + 1) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+    label_day_two.configure(text=str(weekdays[(today_weekday + 1) % 7]) + ", " + str(months[today_month]) + " " + str(days[0]) + "    " +
                             str(round(api["daily"][1]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][1]["temp"]["min"] - 273.13)) 
                             + "°C     " + api["daily"][1]["weather"][0]["description"])
-    label_day_three.configure(text=str(weekdays[(today_weekday + 2) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+    label_day_three.configure(text=str(weekdays[(today_weekday + 2) % 7]) + ", " + str(months[today_month]) + " " + str(days[1]) + "    " +
                             str(round(api["daily"][2]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][2]["temp"]["min"] - 273.13)) 
                             + "°C     " + api["daily"][2]["weather"][0]["description"])
-    label_day_four.configure(text=str(weekdays[(today_weekday + 3) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+    label_day_four.configure(text=str(weekdays[(today_weekday + 3) % 7]) + ", " + str(months[today_month]) + " " + str(days[2]) + "    " +
                             str(round(api["daily"][3]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][3]["temp"]["min"] - 273.13)) 
                             + "°C     " + api["daily"][3]["weather"][0]["description"])
-    label_day_five.configure(text=str(weekdays[(today_weekday + 4) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+    label_day_five.configure(text=str(weekdays[(today_weekday + 4) % 7]) + ", " + str(months[today_month]) + " " + str(days[3]) + "    " +
                             str(round(api["daily"][4]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][4]["temp"]["min"] - 273.13)) 
                             + "°C     " + api["daily"][4]["weather"][0]["description"])
-    label_day_six.configure(text=str(weekdays[(today_weekday + 5) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+    label_day_six.configure(text=str(weekdays[(today_weekday + 5) % 7]) + ", " + str(months[today_month]) + " " + str(days[4]) + "    " +
                             str(round(api["daily"][5]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][5]["temp"]["min"] - 273.13)) 
                             + "°C     " + api["daily"][5]["weather"][0]["description"])
-    label_day_seven.configure(text=str(weekdays[(today_weekday + 6) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+    label_day_seven.configure(text=str(weekdays[(today_weekday + 6) % 7]) + ", " + str(months[today_month]) + " " + str(days[5]) + "    " +
                             str(round(api["daily"][6]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][6]["temp"]["min"] - 273.13)) 
                             + "°C     " + api["daily"][6]["weather"][0]["description"])
-    label_day_eight.configure(text=str(weekdays[(today_weekday + 7) % 7]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
+    label_day_eight.configure(text=str(weekdays[(today_weekday + 7) % 7]) + ", " + str(months[today_month]) + " " + str(days[6]) + "    " +
                             str(round(api["daily"][7]["temp"]["max"] - 273.13)) + "/" + str(round(api["daily"][7]["temp"]["min"] - 273.13)) 
                             + "°C     " + api["daily"][7]["weather"][0]["description"])
 
