@@ -265,7 +265,7 @@ temp_max.grid(row=3, column=0, sticky=W)
 temp_min.grid(row=4, column=0, sticky=W)
 humidity.grid(row=5, column=0, sticky=W)
 
-#----------------------------------------------------------------------------------------7 Day Forecast
+#----------------------------------------------------------------------------------------8 Day Forecast
 label_eight_day_forecast = Label(eight_day_forecast_frame, text="8-day forecast",font=("bold", 18))
 label_day_one = Label(eight_day_forecast_frame, font=("Calibri", 14))
 label_day_two = Label(eight_day_forecast_frame, font=("Calibri", 14))
@@ -304,9 +304,7 @@ with open('Code/settings/fav.json') as f:
     city_name.set(preload)
     search_city()
 
-#----------------------------------------------------------------------------------------weather prediction
-Unix_time_now = int(time.time())
-
+#----------------------------------------------------------------------------------------call get_time() function
 get_time()
 
 #----------------------------------------------------------------------------------------start window
