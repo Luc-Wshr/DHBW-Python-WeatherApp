@@ -92,15 +92,13 @@ def search_city(event=None):
         img_data.write(country_flag_image.content)
         img_data.close()
         countryName.set(api_country)
+        
         #------------------------------------------------------------------set flag image
-        flag_adress= ImageTk.PhotoImage(Image.open("Flags/"+api_country +".png"))
         flag_img = Image.open("Flags/"+api_country +".png")
         loaded_img = ImageTk.PhotoImage(flag_img)
         Flag_label = tkinter.Label(image=loaded_img)
         Flag_label.image = loaded_img
         Flag_label.grid(row=0, column=1, sticky=W)
-        label_flag = Label(root, pady=100, image=flag_adress)
-        label_flag.grid(row=0, column=2, sticky=W)
 
         #------------------------------------------------------------------write Weather data into Labels
         weather_today = weather[0]['main']
