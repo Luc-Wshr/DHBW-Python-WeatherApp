@@ -247,8 +247,13 @@ def save_as_favorite():
 
 
 # ----------------------------------------------------------------------------------------Image
-img = ImageTk.PhotoImage(Image.open("Code/settings/Logo_Python.png"))
-logo = Label(root, image=img)
+mytime = time.localtime()
+print(mytime)
+if mytime.tm_hour < 6 or mytime.tm_hour > 18:
+    img = ImageTk.PhotoImage(Image.open("Code/settings/Logo_Python_night.png"))
+else:
+    img = ImageTk.PhotoImage(Image.open("Code/settings/Logo_Python.png"))
+logo = Label(root, pady=100, image=img)
 logo.grid(row=0, column=0, sticky=W)
 
 # ----------------------------------------------------------------------------------------city input
