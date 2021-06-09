@@ -29,3 +29,4 @@ Das Programm soll abhängig von den anstehenden Wetterbedingungen für den Tag B
 - Wetter-Historie (letzten 7 Tagen/1 Mona, wie war das Wetter)
 - Es kann ein Favoriten-Standort angelegt werden, welchem beim Start sofort alle Daten anzeigt 
 - Es wird die Flagge des jeweiligen Landen angezeigt, damit man Orte wie Paris - Frankreich und Paris - USA unterscheiden kann auf den ersten Blick
+- Das User-Interface passt sich der lokalen Zeit des Users an - Tagsüber wird ein Sonnen-Logo angezeigt und bei Nacht ein Mond-logo
