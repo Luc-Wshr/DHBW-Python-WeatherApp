@@ -15,15 +15,20 @@ root.maxsize("960","540")
 
 #----------------------------------------------------------------------------------------frames
 input_frame = Frame(root)
+date_time_frame = Frame(root)
 weather_frame = Frame(root)
-weathermap_frame = Frame(root)
 eight_day_forecast_frame = Frame(root)
+weathermap_frame = Frame(root)
 
 weather_frame['background']="light grey"
-input_frame.grid(row=1, column=0, columnspan=2, sticky=W)
-weather_frame.grid(row=2, rowspan=2, column=0, columnspan=2, sticky=W)
+
+
+
+input_frame.grid(row=0, column=1)
+date_time_frame.grid(row=0, column=6, sticky=E)
+weather_frame.grid(row=1, rowspan=7, column=0, columnspan=3, sticky=W)
+eight_day_forecast_frame.grid(row=1, rowspan=9, column=4, columnspan=3, sticky=E)
 weathermap_frame.grid(row=2, column=2)
-eight_day_forecast_frame.grid(row=2, column=4)
 #----------------------------------------------------------------------------------------Key-values
 api_key = "12f04c87d16f8e311477842c595d4c77"
 countryName = StringVar()
@@ -92,13 +97,12 @@ def search_city(event=None):
         img_data.write(country_flag_image.content)
         img_data.close()
         countryName.set(api_country)
-        
         #------------------------------------------------------------------set flag image
         flag_img = Image.open("Flags/"+api_country +".png")
         loaded_img = ImageTk.PhotoImage(flag_img)
-        Flag_label = tkinter.Label(image=loaded_img)
+        Flag_label = tkinter.Label(weather_frame, image=loaded_img, bg="light grey")
         Flag_label.image = loaded_img
-        Flag_label.grid(row=0, column=1, sticky=W)
+        Flag_label.grid(row=0, column=2, sticky=E)
 
         #------------------------------------------------------------------write Weather data into Labels
         weather_today = weather[0]['main']
@@ -118,6 +122,7 @@ def search_city(event=None):
 
 #----------------------------------------------------------------------------------------8 Day Weather Forecast
 def eight_day_forecast():
+    """this function gives Information about the max. and min. temperature and weather description for the next 8 days (today included)"""
     api_request_city = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                + city_name.get() + "&units=metric&appid="+api_key)
     api_city = json.loads(api_request_city.content)
@@ -159,7 +164,6 @@ def eight_day_forecast():
         new_time = today + tdelta
         new_time_day = new_time.day
         days.append(new_time_day)
-    print(days)
     #icon = requests.get("http://openweathermap.org/img/wn/" + api["daily"][0]["weather"][0]["icon"] + "@2x.png")
     #icon_data = open(("Icons/"+api["daily"][0]["weather"][0]["icon"]+".png"), "wb")
     #icon_data.write(icon.content)
@@ -219,13 +223,8 @@ def save_as_favorite():
 
 
 #----------------------------------------------------------------------------------------Image
-mytime = time.localtime()
-if mytime.tm_hour < 6 or mytime.tm_hour > 18:
-    img = ImageTk.PhotoImage(Image.open("Code/settings/Logo_Python_night.png"))
-else:
-    img = ImageTk.PhotoImage(Image.open("Code/settings/Logo_Python.png"))
-
-logo = Label(root, pady=100, image=img)
+img = ImageTk.PhotoImage(Image.open("Code/settings/Logo_Python.png"))
+logo = Label(root, image=img)
 logo.grid(row=0, column=0, sticky=W)
 
 #----------------------------------------------------------------------------------------city input
@@ -238,37 +237,41 @@ inpt.config(state=DISABLED)
 inpt.bind("<Button-1>",click)
 input_button = Button(input_frame, text="search",
                       command=search_city)
-input_label.grid(row=0, column=1, sticky=W, padx=10, pady=5)
-inpt.grid(row=0, column=2, sticky=E, padx=10, pady=5)
-input_button.grid(row=0, column=3, sticky=E, pady=2.5)
+input_label.grid(row=0, column=1, sticky=W)
+inpt.grid(row=0, column=2, sticky=W)
+input_button.grid(row=0, column=3, sticky=E)
 
 #----------------------------------------------------------------------------------------weather
 city_print = StringVar()
-label_country = Label(weather_frame, textvariable=countryName, font=("bold", 25),bg="light grey")
-label_clock = Label(root, font=("Calibri",20), bg="grey",fg="white")
-label_date = Label(root, font=("Calibri",20), bg="grey",fg="white")
-label_city = Label(weather_frame, textvariable=city_print, font=("bold", 25),bg="light grey")
-temp = Label(weather_frame, padx=10, pady=5, font=("bold", 20),bg="light grey")
-weather_description = Label(weather_frame, padx=10, pady=5, font=("Calibri",15),bg="light blue", borderwidth = 1, relief = "solid")
+Converter = Button(input_frame, text = "F°", command = celsius_Fahrenheit_converter)
+Favourites = Button(input_frame, text = "✰", command = save_as_favorite )
+label_date = Label(date_time_frame, font=("Calibri",20), bg="grey",fg="white")
+label_clock = Label(date_time_frame, font=("Calibri",20), bg="grey",fg="white")
+
+label_city = Label(weather_frame, textvariable=city_print, font=("bold", 20),bg="light grey")
+
+temp = Label(weather_frame, padx=10, pady=5, font=("bold", 15),bg="light grey")
 temp_max = Label(weather_frame, padx=10, pady=0, font=("Calibri", 10),bg="light grey")
 temp_min = Label(weather_frame, padx=10, pady=0, font=("Calibri", 10),bg="light grey")
 humidity = Label(weather_frame, padx=10, pady=10, font=("Calibri", 10),bg="light grey")
-Converter = Button(input_frame, text = "F°", command = celsius_Fahrenheit_converter)
-Favourites = Button(input_frame, text = "✰", command = save_as_favorite )
+weather_description = Label(weather_frame, padx=10, pady=5, font=("Calibri",15),bg="light blue", borderwidth = 1, relief = "solid")
 
-weather_description.grid(row=2, column=1, sticky=W)
-label_country.grid(row =1, column =2, sticky = E, pady = 2.5 , padx = 10)
-label_date.grid(row=1, column=5, sticky=N, padx=20)
-label_clock.grid(row=0, column=5, sticky=N, pady=2.5,padx=20)
-Converter.grid(row=0, column=4, sticky=E, pady=2.5, padx=25)
-Favourites.grid(row=0, column=5, sticky=E, pady=2.5, padx=15)
-label_city.grid(row=1, column=0, sticky=W, padx=10, pady=10)
+
+Converter.grid(row=0, column=4, sticky=E)
+Favourites.grid(row=0, column=5, sticky=E)
+label_date.grid(row=0, sticky=E)
+label_clock.grid(row=1, sticky=E)
+
+
+label_city.grid(row=0, column=0, sticky=W)
 temp.grid(row=2, column=0, sticky=W)
 temp_max.grid(row=3, column=0, sticky=W)
 temp_min.grid(row=4, column=0, sticky=W)
 humidity.grid(row=5, column=0, sticky=W)
+weather_description.grid(row=6, column=0, sticky=W, padx=20, pady=20)
 
-#----------------------------------------------------------------------------------------8 Day Forecast
+
+#----------------------------------------------------------------------------------------7 Day Forecast
 label_eight_day_forecast = Label(eight_day_forecast_frame, text="8-day forecast",font=("bold", 18))
 label_day_one = Label(eight_day_forecast_frame, font=("Calibri", 14))
 label_day_two = Label(eight_day_forecast_frame, font=("Calibri", 14))
@@ -307,7 +310,9 @@ with open('Code/settings/fav.json') as f:
     city_name.set(preload)
     search_city()
 
-#----------------------------------------------------------------------------------------call get_time() function
+#----------------------------------------------------------------------------------------weather prediction
+Unix_time_now = int(time.time())
+
 get_time()
 
 #----------------------------------------------------------------------------------------start window
