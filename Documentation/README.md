@@ -11,6 +11,7 @@
 ------------------------------
 - Datetime, time
   - date
+  - timedelta
 ------------------------------
 - Json, requests
   -  api
