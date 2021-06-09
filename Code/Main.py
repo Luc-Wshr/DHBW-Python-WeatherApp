@@ -13,16 +13,16 @@ import time
 root = Tk()
 root.title("Weather-App")
 root.geometry('960x540')
-root.minsize("620", "540")
-root.maxsize("960", "540")
+root.minsize("960","540")
+root.maxsize("960","540")
+root.iconbitmap("Code/settings/ImgIcon.ico")
 
 # ----------------------------------------------------------------------------------------frames
 input_frame = Frame(root)
 date_time_frame = Frame(root)
-weather_frame = Frame(root)
-weathermap_frame = Frame(root)
+weather_frame = Frame(root, highlightbackground="black", highlightthickness=1)
+eight_day_forecast_frame = Frame(root, highlightbackground="black", highlightthickness=1)
 five_days_history_frame = Frame(root)
-eight_day_forecast_frame = Frame(root)
 weathermap_frame = Frame(root)
 
 weather_frame['background'] = "light grey"
