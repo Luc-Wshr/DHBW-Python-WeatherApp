@@ -1,4 +1,5 @@
 # ----------------------------------------------------------------------------------------Library imports
+from io import open_code
 from tkinter import *
 from PIL import ImageTk, Image
 from datetime import date, timedelta
@@ -22,17 +23,13 @@ input_frame = Frame(root)
 date_time_frame = Frame(root)
 weather_frame = Frame(root, highlightbackground="black", highlightthickness=1)
 eight_day_forecast_frame = Frame(root, highlightbackground="black", highlightthickness=1)
-five_days_history_frame = Frame(root)
 weathermap_frame = Frame(root)
 
 weather_frame['background'] = "light grey"
 input_frame.grid(row=1, column=0, columnspan=2, sticky=W)
 weather_frame.grid(row=2, rowspan=2, column=0, columnspan=2, sticky=W)
-weathermap_frame.grid(row=2, column=2)
+weathermap_frame.grid(row=3, column=4)
 eight_day_forecast_frame.grid(row=2, column=4)
-# ----------------------------------------------------------------------------------------Key-values
-weather_frame['background']="light grey"
-
 
 
 input_frame.grid(row=0, column=1)
@@ -71,7 +68,15 @@ def celsius_Fahrenheit_converter():
         temp_min_Fahrenheit = round(((main["temp_min"] * 9 / 5) + 32), 2)
         temp_min.configure(text="min. " + str(temp_min_Fahrenheit) + "°F")
         humidity.configure(text="humidity: " + str(main['humidity']) + "%")
+#---------------------------------------------------------------------------------------- UNIX converter
+def convert_unix(dt):                                                   # TODO: nur "date" im Moment. Für "datetime" noch überarbeiten
+    timestamp = (dt - date(1970, 1, 1)).total_seconds()
+    return(int(timestamp))
 
+#-----------------------------------------------------------------------------------------get past date
+def get_past_date(x):
+    yesterday = date.today() - timedelta(days=x)
+    return(yesterday)
 # ----------------------------------------------------------------------------------------Hour-clock
 
 
@@ -156,13 +161,13 @@ def eight_day_forecast():
         location_y) + "&lon=" + str(location_x) + "&exclude=current,minutely,hourly&appid=" + api_key)
     api = json.loads(api_request_forecast.content)
     weekdays = {
-        0: "Mon",
-        1: "Tue",
-        2: "Wed",
-        3: "Thu",
-        4: "Fri",
-        5: "Sat",
-        6: "Sun"
+        0: "Monday",
+        1: "Tuesday",
+        2: "Wednesday",
+        3: "Thursday",
+        4: "Friday",
+        5: "Saturday",
+        6: "Sunday"
     }
     months = {
         1: "Jan",
@@ -200,27 +205,56 @@ def eight_day_forecast():
 
     for i, x in enumerate(forecast_days):
         if i == 0:
-            x.configure(text=str(weekdays[today_weekday]) + ", " + str(months[today_month]) + " " + str(today_day) + "    " +
-                        str(round(api["daily"][i]["temp"]["max"] - 273.13)) +
-                        "/" + str(round(api["daily"][i]
-                                        ["temp"]["min"] - 273.13))
-                            + "°C     " + api["daily"][i]["weather"][0]["description"])
+            text= f'{str(weekdays[today_weekday])}:    {str(round(api["daily"][i]["temp"]["min"] - 273.13))} - {str(round(api["daily"][i]["temp"]["max"] - 273.13))}°C     {api["daily"][i]["weather"][0]["description"]}'
+            x.configure(text = text)
         else:
-            x.configure(text=str(weekdays[(today_weekday + i) % 7]) + ", " + str(months[today_month]) + " " + str(days[i-1]) + "    " +
-                        str(round(api["daily"][i]["temp"]["max"] - 273.13)) +
-                        "/" + str(round(api["daily"][i]
-                                        ["temp"]["min"] - 273.13))
-                            + "°C     " + api["daily"][i]["weather"][0]["description"])
+            text = f'{str(weekdays[(today_weekday + i) % 7])}:    {str(round(api["daily"][i]["temp"]["min"] - 273.13))} - {str(round(api["daily"][i]["temp"]["max"] - 273.13))}°C     {api["daily"][i]["weather"][0]["description"]}'
+            x.configure(text=text)
 
 
 # ---------------------------------------------------------------------------------------5 days history
-def weather_history():
+def weather_history(): #ANCHOR
     api_request_city = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                     + city_name.get() + "&units=metric&appid="+api_key)
     api_city = json.loads(api_request_city.content)
     location_x = api_city["coord"]["lon"]
     location_y = api_city["coord"]["lat"]
 
+    days = []
+    weekdays = []
+    for i in range(5):
+        day = get_past_date(i + 1)
+        day_dt = convert_unix(day)
+        weekday = time.strftime('%A', time.localtime(day_dt))
+        weekdays.append(weekday)
+        days.append(day_dt)
+
+    api_list = []
+    for dt in days:
+        api_request_day = requests.get("http://api.openweathermap.org/data/2.5/onecall/timemachine?lat=" + str(location_y) + "&lon="+ str(location_x) + "&units=metric&dt=" + str(dt) +"&appid=" + api_key)
+        api = json.loads(api_request_day.content)
+        api_list.append(api)
+        # print (api["hourly"][13]["temp"])
+
+    five_days_history_frame = Frame(root, highlightbackground="black", highlightthickness=1)
+    five_days_history_frame.grid(row=2, column=2, sticky=W,)
+    history_title = Label(five_days_history_frame, text="5-days-history", font=('bold', 18))
+    history_title.grid(sticky=NW)
+
+    history_day_one = Label(five_days_history_frame, font=("Calibri", 14))
+    history_day_two = Label(five_days_history_frame, font=("Calibri", 14))
+    history_day_three = Label(five_days_history_frame, font=("Calibri", 14))
+    history_day_four = Label(five_days_history_frame, font=("Calibri", 14))
+    history_day_five = Label(five_days_history_frame, font=("Calibri", 14))
+    history_days = [history_day_one, history_day_two, history_day_three, history_day_four, history_day_five]
+
+    for i, day, in enumerate(history_days):
+        day.grid(sticky=NW)
+        text = f'{weekdays[i]}: {str(api_list[i]["hourly"][13]["temp"])}°C'
+        day.configure(text = text)
+        # print(text)
+    close_button = Button(five_days_history_frame, text='close', command=five_days_history_frame.destroy)
+    close_button.grid(sticky=W, pady=(20,0))
 
 # ---------------------------------------------------------------------------------------Weather map
 
@@ -256,7 +290,7 @@ else:
 logo = Label(root, pady=100, image=img)
 logo.grid(row=0, column=0, sticky=W)
 
-# ----------------------------------------------------------------------------------------city input
+# ----------------------------------------------------------------------------------------city input Labels
 input_label = Label(input_frame, text="Name:")
 city_name = StringVar()
 city_name.set("Search for your city!")
@@ -270,7 +304,7 @@ input_label.grid(row=0, column=1, sticky=W)
 inpt.grid(row=0, column=2, sticky=W)
 input_button.grid(row=0, column=3, sticky=E)
 
-# ----------------------------------------------------------------------------------------weather
+# ----------------------------------------------------------------------------------------weather Labels
 city_print = StringVar()
 label_country = Label(weather_frame, textvariable=countryName,
                       font=("bold", 25), bg="light grey")
@@ -280,6 +314,7 @@ Converter = Button(input_frame, text = "F°", command = celsius_Fahrenheit_conve
 Favourites = Button(input_frame, text = "✰", command = save_as_favorite )
 label_date = Label(date_time_frame, font=("Calibri",20), bg="grey",fg="white")
 label_clock = Label(date_time_frame, font=("Calibri",20), bg="grey",fg="white")
+History = Button(weather_frame, text="view last 5 days", command=weather_history)
 label_city = Label(weather_frame, textvariable=city_print, font=("bold", 20),bg="light grey")
 temp = Label(weather_frame, padx=10, pady=5, font=("bold", 15),bg="light grey")
 temp_max = Label(weather_frame, padx=10, pady=0, font=("Calibri", 10),bg="light grey")
@@ -299,11 +334,12 @@ temp.grid(row=2, column=0, sticky=W)
 temp_max.grid(row=3, column=0, sticky=W)
 temp_min.grid(row=4, column=0, sticky=W)
 humidity.grid(row=5, column=0, sticky=W)
-weather_description.grid(row=6, column=0, sticky=W, padx=20, pady=20)
+weather_description.grid(row=6, column=0, sticky=W, padx=10, pady=20)
+History.grid(sticky=W, padx=10, pady=5)
 
 
 
-# ----------------------------------------------------------------------------------------8 Day Forecast
+# ----------------------------------------------------------------------------------------8 Day Forecast Labels
 label_eight_day_forecast = Label(
     eight_day_forecast_frame, text="8-day forecast", font=("bold", 18))
 label_day_one = Label(eight_day_forecast_frame, font=("Calibri", 14))
