@@ -26,6 +26,7 @@ eight_day_forecast_frame = Frame(
 weathermap_frame = Frame(root)
 
 weather_frame['background'] = "light grey"
+eight_day_forecast_frame['background'] = "light grey"
 input_frame.grid(row=1, column=0, columnspan=2, sticky=W)
 weather_frame.grid(row=2, rowspan=2, column=0, columnspan=2, sticky=W)
 weathermap_frame.grid(row=3, column=4)
@@ -362,15 +363,15 @@ History.grid(sticky=W, padx=10, pady=5)
 
 # ----------------------------------------------------------------------------------------8 Day Forecast Labels
 label_eight_day_forecast = Label(
-    eight_day_forecast_frame, text="8-day forecast", font=("bold", 18))
-label_day_one = Label(eight_day_forecast_frame, font=("Calibri", 14))
-label_day_two = Label(eight_day_forecast_frame, font=("Calibri", 14))
-label_day_three = Label(eight_day_forecast_frame, font=("Calibri", 14))
-label_day_four = Label(eight_day_forecast_frame, font=("Calibri", 14))
-label_day_five = Label(eight_day_forecast_frame, font=("Calibri", 14))
-label_day_six = Label(eight_day_forecast_frame, font=("Calibri", 14))
-label_day_seven = Label(eight_day_forecast_frame, font=("Calibri", 14))
-label_day_eight = Label(eight_day_forecast_frame, font=("Calibri", 14))
+    eight_day_forecast_frame, text="8-day forecast", font=("bold", 18), bg="light grey")
+label_day_one = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_two = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_three = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_four = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_five = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_six = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_seven = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_eight = Label(eight_day_forecast_frame, font=("Calibri", 14),bg="light grey")
 forecast_days = [label_day_one, label_day_two, label_day_three, label_day_four,
                  label_day_five, label_day_six, label_day_seven, label_day_eight]
 
