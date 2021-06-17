@@ -4,6 +4,8 @@ from PIL import ImageTk, Image
 from datetime import date, timedelta
 from requests import api
 from tkinter import messagebox
+from io import BytesIO
+from urllib.request import urlopen
 import tkinter
 import json
 import requests
@@ -149,7 +151,17 @@ def search_city(event=None):
         temp_max.configure(text="max. " + str(main["temp_max"]) + "°C")
         temp_min.configure(text="min. " + str(main["temp_min"]) + "°C")
         humidity.configure(text="humidity: " + str(main['humidity']) + "%")
-        weather_description.configure(text=weather_today)
+
+        weather_icon_code = weather[0]['icon']
+        icon_link = f' http://openweathermap.org/img/wn/{weather_icon_code}@2x.png'
+        u = urlopen(icon_link)
+        raw_data = u.read()
+        u.close()
+
+        im = Image.open(BytesIO(raw_data))
+        icon = ImageTk.PhotoImage(im)
+        weather_description.configure(image=icon)
+        weather_description.image = icon
         eight_day_forecast()
         inpt.config(state=DISABLED)
     else:
@@ -250,16 +262,17 @@ def weather_history():  # ANCHOR
     History.grid_forget()
     five_days_history_frame = Frame(
         root, highlightbackground="black", highlightthickness=1)
+    five_days_history_frame['background'] = "light grey"
     five_days_history_frame.grid(row=2, column=2, sticky=W,)
     history_title = Label(five_days_history_frame,
-                          text="5-days-history", font=('bold', 18))
+                          text="5-days-history", font=('bold', 18), bg="light grey")
     history_title.grid(sticky=NW)
 
-    history_day_one = Label(five_days_history_frame, font=("Calibri", 14))
-    history_day_two = Label(five_days_history_frame, font=("Calibri", 14))
-    history_day_three = Label(five_days_history_frame, font=("Calibri", 14))
-    history_day_four = Label(five_days_history_frame, font=("Calibri", 14))
-    history_day_five = Label(five_days_history_frame, font=("Calibri", 14))
+    history_day_one = Label(five_days_history_frame, font=("Calibri", 14), bg="light grey")
+    history_day_two = Label(five_days_history_frame, font=("Calibri", 14), bg="light grey")
+    history_day_three = Label(five_days_history_frame, font=("Calibri", 14), bg="light grey")
+    history_day_four = Label(five_days_history_frame, font=("Calibri", 14), bg="light grey")
+    history_day_five = Label(five_days_history_frame, font=("Calibri", 14), bg="light grey")
     history_days = [history_day_one, history_day_two,
                     history_day_three, history_day_four, history_day_five]
 
@@ -350,7 +363,7 @@ temp_min = Label(weather_frame, padx=10, pady=0,
                  font=("Calibri", 10), bg="light grey")
 humidity = Label(weather_frame, padx=10, pady=10,
                  font=("Calibri", 10), bg="light grey")
-weather_description = Label(weather_frame, padx=10, pady=5, font=(
+weather_description = tkinter.Label(weather_frame, padx=10, pady=5, font=(
     "Calibri", 15), bg="light blue", borderwidth=1, relief="solid")
 
 
