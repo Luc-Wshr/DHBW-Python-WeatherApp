@@ -26,17 +26,12 @@ eight_day_forecast_frame = Frame(root, highlightbackground="black", highlightthi
 weathermap_frame = Frame(root)
 
 weather_frame['background'] = "light grey"
-input_frame.grid(row=1, column=0, columnspan=2, sticky=W)
+input_frame.grid(row=0, column=1, columnspan=2, sticky=W)
 weather_frame.grid(row=2, rowspan=2, column=0, columnspan=2, sticky=W)
 weathermap_frame.grid(row=3, column=4)
-eight_day_forecast_frame.grid(row=2, column=4)
-
-
-input_frame.grid(row=0, column=1)
-date_time_frame.grid(row=0, column=6, sticky=E)
-weather_frame.grid(row=1, rowspan=7, column=0, columnspan=3, sticky=W)
 eight_day_forecast_frame.grid(row=1, rowspan=9, column=4, columnspan=3, sticky=E)
-weathermap_frame.grid(row=2, column=2)
+date_time_frame.grid(row=0, column=6, sticky=E)
+
 #----------------------------------------------------------------------------------------Key-values
 api_key = "12f04c87d16f8e311477842c595d4c77"
 countryName = StringVar()
