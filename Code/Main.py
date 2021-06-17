@@ -153,7 +153,7 @@ def search_city(event=None):
         humidity.configure(text="humidity: " + str(main['humidity']) + "%")
 
         weather_icon_code = weather[0]['icon']
-        icon_link = f' http://openweathermap.org/img/wn/{weather_icon_code}@2x.png'
+        icon_link = f'http://openweathermap.org/img/wn/{weather_icon_code}@2x.png'
         u = urlopen(icon_link)
         raw_data = u.read()
         u.close()
