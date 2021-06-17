@@ -16,6 +16,7 @@ root.geometry('960x540')
 root.minsize("960", "540")
 root.maxsize("960", "540")
 root.iconbitmap("Code/settings/ImgIcon.ico")
+# root.grid_rowconfigure(2, weight=1)
 
 # ----------------------------------------------------------------------------------------frames
 input_frame = Frame(root)
@@ -30,10 +31,10 @@ input_frame.grid(row=1, column=0, columnspan=2, sticky=W)
 weather_frame.grid(row=2, rowspan=2, column=0, columnspan=2, sticky=W)
 weathermap_frame.grid(row=3, column=4)
 eight_day_forecast_frame.grid(row=2, column=4)
+date_time_frame.grid(row=0, column=6, sticky=E)
 
 
 input_frame.grid(row=0, column=1)
-date_time_frame.grid(row=0, column=6, sticky=E)
 weather_frame.grid(row=1, rowspan=7, column=0, columnspan=3, sticky=W)
 eight_day_forecast_frame.grid(
     row=1, rowspan=9, column=4, columnspan=3, sticky=E)
@@ -220,6 +221,7 @@ def eight_day_forecast():
 
 
 # ---------------------------------------------------------------------------------------5 days history
+
 def weather_history():  # ANCHOR
     api_request_city = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                     + city_name.get() + "&units=metric&appid="+api_key)
@@ -244,6 +246,7 @@ def weather_history():  # ANCHOR
         api_list.append(api)
         # print (api["hourly"][13]["temp"])
 
+    History.grid_forget()
     five_days_history_frame = Frame(
         root, highlightbackground="black", highlightthickness=1)
     five_days_history_frame.grid(row=2, column=2, sticky=W,)
@@ -263,9 +266,14 @@ def weather_history():  # ANCHOR
         day.grid(sticky=NW)
         text = f'{weekdays[i]}: {str(api_list[i]["hourly"][13]["temp"])}°C'
         day.configure(text=text)
-        # print(text)
+
+# ---function for the close_button
+    def close_button_cmd():
+        five_days_history_frame.destroy()
+        History.grid(sticky=W, padx=10, pady=5)
+
     close_button = Button(five_days_history_frame, text='close',
-                          command=five_days_history_frame.destroy)
+                          command=close_button_cmd)
     close_button.grid(sticky=W, pady=(20, 0))
 
 # ---------------------------------------------------------------------------------------Weather map
