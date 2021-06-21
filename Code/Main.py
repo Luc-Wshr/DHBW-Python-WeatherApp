@@ -18,7 +18,15 @@ root.geometry('960x540')
 root.minsize("960", "540")
 root.maxsize("960", "540")
 root.iconbitmap("Code/settings/ImgIcon.ico")
-# root.grid_rowconfigure(2, weight=1)
+root.columnconfigure(index=0, weight=1)
+root.columnconfigure(index=1, weight=1)
+root.columnconfigure(index=2, weight=1)
+root.rowconfigure(index=0, weight=1)
+root.rowconfigure(index=1, weight=1)
+root.rowconfigure(index=2, weight=1)
+
+
+
 
 # ----------------------------------------------------------------------------------------frames
 input_frame = Frame(root)
@@ -257,9 +265,8 @@ def weather_history():  # ANCHOR
             location_y) + "&lon=" + str(location_x) + "&units=metric&dt=" + str(dt) + "&appid=" + api_key)
         api = json.loads(api_request_day.content)
         api_list.append(api)
-        # print (api["hourly"][13]["temp"])
 
-    History.grid_forget()
+    History.configure(state=DISABLED)
     five_days_history_frame = Frame(
         root, highlightbackground="black", highlightthickness=1)
     five_days_history_frame['background'] = "light grey"
@@ -284,7 +291,7 @@ def weather_history():  # ANCHOR
 # ---function for the close_button
     def close_button_cmd():
         five_days_history_frame.destroy()
-        History.grid(sticky=W, padx=10, pady=5)
+        History.configure(state=ACTIVE)
 
     close_button = Button(five_days_history_frame, text='close',
                           command=close_button_cmd)
