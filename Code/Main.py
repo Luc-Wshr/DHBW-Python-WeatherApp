@@ -165,9 +165,10 @@ def search_city(event=None):
         u = urlopen(icon_link)
         raw_data = u.read()
         u.close()
-
         im = Image.open(BytesIO(raw_data))
         icon = ImageTk.PhotoImage(im)
+
+        weather_main_description.configure(text=weather_today)
         weather_description.configure(image=icon)
         weather_description.image = icon
         eight_day_forecast()
@@ -372,6 +373,8 @@ humidity = Label(weather_frame, padx=10, pady=10,
                  font=("Calibri", 10), bg="light grey")
 weather_description = tkinter.Label(weather_frame, padx=10, pady=5, font=(
     "Calibri", 15), bg="light blue", borderwidth=1, relief="solid")
+weather_main_description = Label(weather_frame,  padx=10, pady=5, font=(
+    "Calibri", 15, ), bg="light grey", fg="black")
 
 
 Converter.grid(row=0, column=4, sticky=E)
@@ -385,7 +388,8 @@ temp.grid(row=2, column=0, sticky=W)
 temp_max.grid(row=3, column=0, sticky=W)
 temp_min.grid(row=4, column=0, sticky=W)
 humidity.grid(row=5, column=0, sticky=W)
-weather_description.grid(row=6, column=0, sticky=W, padx=10, pady=20)
+weather_description.grid(row=6, column=0, sticky=W, padx=10)
+weather_main_description.grid(row=7, column=0, sticky=W, padx=10)
 History.grid(sticky=W, padx=10, pady=5)
 
 
