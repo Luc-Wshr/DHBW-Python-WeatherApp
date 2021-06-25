@@ -14,5 +14,5 @@
   - [x] Temperaturumrechnung von C° in F°
   - [x] Wetter-Historie der letzten 5 Tage (wie war das Wetter gestern/vorgestern etc.)
   - [x] Es kann ein Favoriten-Standort angelegt werden, welchem beim Start sofort alle Daten anzeigt
-  - [x] Es wird die Flagge des jeweiligen Landen angezeigt, damit man Orte wie Paris - Frankreich und Paris - USA unterscheiden kann auf den ersten Blick
+  - [x] Es wird die Flagge des jeweiligen Lands angezeigt, damit man Orte wie Paris - Frankreich und Paris - USA unterscheiden kann auf den ersten Blick
   - [x] Das User-Interface passt sich der lokalen Zeit des Users an - Tagsüber wird ein Sonnen-Logo angezeigt und bei Nacht ein Mond-logo
