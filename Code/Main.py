@@ -1,5 +1,6 @@
 # ----------------------------------------------------------------------------------------Library imports
 from tkinter import *
+from folium import * 
 from PIL import ImageTk, Image
 from datetime import date, timedelta
 from requests import api
@@ -172,6 +173,7 @@ def search_city(event=None):
         weather_description.configure(image=icon)
         weather_description.image = icon
         eight_day_forecast()
+        weather_map()
         inpt.config(state=DISABLED)
     else:
         city_print.set(" City not found")
@@ -307,10 +309,9 @@ def weather_map():
     api = json.loads(api_request.content)
     location_x = api["coord"]["lon"]
     location_y = api["coord"]["lat"]
-    #m = folium.Map(location=[location_x, location_y])
-    # m.save("MyMap.html")
-    # print(m)
-    # weathermaplabel.configure(image=m)
+    m = folium.Map(location=[location_x, location_y])
+    m.save("MyMap.html")
+
 
 
 # ----------------------------------------------------------------------------------------set Favourites for standart-view on startup
@@ -418,11 +419,12 @@ label_day_seven.grid(row=7, column=0, sticky=W)
 label_day_eight.grid(row=8, column=0, sticky=W)
 
 # ----------------------------------------------------------------------------------------Weather Map
-#weathermaplabel = Label(weathermap_frame)
-#weathermap = Button(weathermap_frame, text="test", command = weather_map)
+#img = ImageTk.PhotoImage(Image.open("MyMap.html"))
+#weathermap = Label(weathermap_frame, image=img)
 
 
-#weathermaplabel.grid(row=0, column=1)
+
+
 #weathermap.grid(row=1, column=1)
 
 
