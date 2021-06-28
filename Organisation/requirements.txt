@@ -10,3 +10,4 @@ PySocks==1.7.1
 requests==2.25.1
 setuptools==49.2.1
 urllib3==1.26.4
+folium==0.12.1

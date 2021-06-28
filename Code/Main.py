@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------------------Library imports
 from tkinter import *
-from folium import * 
+import folium
 from PIL import ImageTk, Image
 from datetime import date, timedelta
 from requests import api
@@ -11,6 +11,7 @@ import tkinter
 import json
 import requests
 import time
+import io 
 
 # ----------------------------------------------------------------------------------------root details
 root = Tk()
@@ -310,7 +311,9 @@ def weather_map():
     location_x = api["coord"]["lon"]
     location_y = api["coord"]["lat"]
     m = folium.Map(location=[location_x, location_y])
-    m.save("MyMap.html")
+    img_m = m._to_png(5)
+    img = Image.open(io.BytesIO(img_m))
+    img.save("MyMap.png")
 
 
 
