@@ -2,13 +2,13 @@
 
 ## for Windows
 ### getting started
-We are using `python3.9`. First you have to create a virutal environment. Navigate to the root of this project and create one.
+In this project, we are using `python3.8`. First you have to create a virutal environment. Navigate to the root of this project and create one.
 ```shell 
 py -m virtualenv venv
 ```
 
 ```shell
-virtualenv venv --python=python3.9
+virtualenv venv --python=python3.8
 ```
 After it is created, activate the virtual environment
 ```shell 
