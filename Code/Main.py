@@ -1,6 +1,5 @@
 # ----------------------------------------------------------------------------------------Library imports
 from tkinter import *
-import folium
 from PIL import ImageTk, Image
 from datetime import date, timedelta, datetime
 from requests import api
@@ -47,12 +46,12 @@ statistics_frame['background'] = "light grey"
 
 
 
-date_time_frame.grid(row=0, column=6, sticky=E, padx=10)
+date_time_frame.grid(row=0, column=5, sticky=E, padx=10)
 input_frame.grid(row=0, column=1)
 weather_frame.grid(row=1, rowspan=7, column=0, columnspan=3, sticky=W, padx=10)
 seven_day_forecast_frame.grid(
     row=0, rowspan=9, column=4, columnspan=3, sticky=E, padx=10)
-statistics_frame.grid(row=3, column=4, columnspan=3, pady=10)
+statistics_frame.grid(row=3, column=5, padx=10, pady=10)
 # ----------------------------------------------------------------------------------------Key-values
 api_key = "12f04c87d16f8e311477842c595d4c77"
 countryName = StringVar()
@@ -203,39 +202,16 @@ def seven_day_forecast():
         5: "Saturday",
         6: "Sunday"
     }
-    months = {
-        1: "Jan",
-        2: "Feb",
-        3: "Mar",
-        4: "Apr",
-        5: "May",
-        6: "Jun",
-        7: "Jul",
-        8: "Aug",
-        9: "Sep",
-        10: "Oct",
-        11: "Nov",
-        12: "Dec",
-    }
+
     today = date.today()
-    today_month = today.month
-    today_day = today.day
     today_weekday = today.weekday()
     days = []
+
     for i in range(7):
         tdelta = timedelta(days=1 + i)
         new_time = today + tdelta
         new_time_day = new_time.day
         days.append(new_time_day)
-    #icon = requests.get("http://openweathermap.org/img/wn/" + api["daily"][0]["weather"][0]["icon"] + "@2x.png")
-    #icon_data = open(("Icons/"+api["daily"][0]["weather"][0]["icon"]+".png"), "wb")
-    # icon_data.write(icon.content)
-    # icon_data.close()
-    #icon_adress= ImageTk.PhotoImage(Image.open("Icons/"+api["daily"][0]["weather"][0]["icon"] +".png"))
-    #icon_img = Image.open("Icons/"+api["daily"][0]["weather"][0]["icon"] +".png")
-    #loaded_img = ImageTk.PhotoImage(icon_img)
-    #Icon_label = tkinter.Label(image=loaded_img)
-    #Icon_label.image = loaded_img
 
     for i, x in enumerate(forecast_days):
         if i == 0:
@@ -275,7 +251,7 @@ def weather_history():  # ANCHOR
     five_days_history_frame = Frame(
         root, highlightbackground="black", highlightthickness=1)
     five_days_history_frame['background'] = "light grey"
-    five_days_history_frame.grid(row=2, column=1, sticky=W)
+    five_days_history_frame.grid(row=2, column=1, sticky=SE, padx= 60)
     history_title = Label(five_days_history_frame,
                           text="5-days-history", font=('bold', 18), bg="light grey")
     history_title.grid(sticky=NW)
@@ -325,8 +301,6 @@ def statistics_seven_day_forecast_temp():
         6: "Sunday"
     }
     today = date.today()
-    today_month = today.month
-    today_day = today.day
     today_weekday = today.weekday()
     days = []
     for i in range(7):
@@ -426,8 +400,8 @@ if mytime.tm_hour < 6 or mytime.tm_hour > 18:
     img = ImageTk.PhotoImage(Image.open("Code/settings/Logo_Python_night.png"))
 else:
     img = ImageTk.PhotoImage(Image.open("Code/settings/Logo_Python.png"))
-logo = Label(root, pady=100, image=img)
-logo.grid(row=0, column=0, sticky=W)
+logo = Label(root, image=img)
+logo.grid(row=0, column=0, sticky=E, padx=10)
 
 # ----------------------------------------------------------------------------------------city input Labels
 input_label = Label(input_frame, text="Name:")
@@ -474,8 +448,8 @@ weather_main_description = Label(weather_frame,  padx=10, pady=5, font=(
     "Calibri", 15, ), bg="light grey", fg="black")
 
 
-Converter.grid(row=0, column=4, sticky=E)
-Favourites.grid(row=0, column=5, sticky=E)
+Converter.grid(row=0, column=5, sticky=E)
+Favourites.grid(row=0, column=6, sticky=E)
 label_date.grid(row=0, sticky=E)
 label_clock.grid(row=1, sticky=E)
 
