@@ -1,6 +1,8 @@
 # DHBW-Python-WeatherApp
 ### getting started
-In this project, we are using `python3.8`. First you have to create a virutal environment. Navigate to the root of this project and create one.
+In this project, we are using `python3.8`. First you have to create a virutal environment. Navigate to the root of this project and create one. <br>
+You might need to start your IDE as Administrator for this to work correctly
+
 ## for Windows
 
 ```shell 
