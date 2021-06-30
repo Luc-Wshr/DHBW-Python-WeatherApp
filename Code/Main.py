@@ -2,7 +2,7 @@
 from tkinter import *
 import folium
 from PIL import ImageTk, Image
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from requests import api
 from tkinter import messagebox
 from io import BytesIO
@@ -35,24 +35,24 @@ root.rowconfigure(index=2, weight=1)
 input_frame = Frame(root)
 date_time_frame = Frame(root)
 weather_frame = Frame(root, highlightbackground="black", highlightthickness=1)
-eight_day_forecast_frame = Frame(
+seven_day_forecast_frame = Frame(
     root, highlightbackground="black", highlightthickness=1)
-weathermap_frame = Frame(root)
+statistics_frame = Frame(root, highlightbackground="black", highlightthickness=1)
 
 weather_frame['background'] = "light grey"
-eight_day_forecast_frame['background'] = "light grey"
-weathermap_frame['background'] = "light grey"
-
-date_time_frame.grid(row=0, column=6, sticky=E)
+seven_day_forecast_frame['background'] = "light grey"
+statistics_frame['background'] = "light grey"
 
 
 
 
+
+date_time_frame.grid(row=0, column=6, sticky=E, padx=10)
 input_frame.grid(row=0, column=1)
-weather_frame.grid(row=1, rowspan=7, column=0, columnspan=3, sticky=W)
-eight_day_forecast_frame.grid(
-    row=0, rowspan=9, column=4, columnspan=3, sticky=E)
-weathermap_frame.grid(row=3, column=3, columnspan=3)
+weather_frame.grid(row=1, rowspan=7, column=0, columnspan=3, sticky=W, padx=10)
+seven_day_forecast_frame.grid(
+    row=0, rowspan=9, column=4, columnspan=3, sticky=E, padx=10)
+statistics_frame.grid(row=3, column=4, columnspan=3, pady=10)
 # ----------------------------------------------------------------------------------------Key-values
 api_key = "12f04c87d16f8e311477842c595d4c77"
 countryName = StringVar()
@@ -174,16 +174,17 @@ def search_city(event=None):
         weather_main_description.configure(text=weather_today)
         weather_description.configure(image=icon)
         weather_description.image = icon
-        eight_day_forecast()
+        seven_day_forecast()
         inpt.config(state=DISABLED)
     else:
         city_print.set(" City not found")
 
+
 # ----------------------------------------------------------------------------------------8 Day Weather Forecast
 
 
-def eight_day_forecast():
-    """this function gives Information about the max. and min. temperature and weather description for the next 8 days (today included)"""
+def seven_day_forecast():
+    """this function gives Information about the max. and min. temperature and weather description for the next 7 days (today included)"""
     api_request_city = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                     + city_name.get() + "&units=metric&appid="+api_key)
     api_city = json.loads(api_request_city.content)
@@ -274,7 +275,7 @@ def weather_history():  # ANCHOR
     five_days_history_frame = Frame(
         root, highlightbackground="black", highlightthickness=1)
     five_days_history_frame['background'] = "light grey"
-    five_days_history_frame.grid(row=2, column=1, sticky=W,)
+    five_days_history_frame.grid(row=2, column=1, sticky=W)
     history_title = Label(five_days_history_frame,
                           text="5-days-history", font=('bold', 18), bg="light grey")
     history_title.grid(sticky=NW)
@@ -301,10 +302,11 @@ def weather_history():  # ANCHOR
                           command=close_button_cmd)
     close_button.grid(sticky=W, pady=(20, 0))
 
-# ---------------------------------------------------------------------------------------Weather map
+# ---------------------------------------------------------------------------------------Statistics
+#-------------------------------------------------------------------------------7 day forecast temperature
 
-
-def statistics_temp():
+def statistics_seven_day_forecast_temp():
+    """this function shows you a graph about the max/min/average temperature for the next 7 days"""
     api_request = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                + city_name.get() + "&units=metric&appid="+api_key)
     api = json.loads(api_request.content)
@@ -332,7 +334,7 @@ def statistics_temp():
         new_time = today + tdelta
         new_time_day = new_time.day
         days.append(new_time_day)
-    #print(len(api["daily"]))
+   
     weekday_list = []
     max_temp_list = []
     min_temp_list = []
@@ -343,17 +345,18 @@ def statistics_temp():
         weekday_list.append(weekday)
 
     for max in range(7):
-        max_temp = round(api["daily"][max]["temp"]["max"] - 273.13)
+        max_temp = api["daily"][max]["temp"]["max"] - 273.13
         max_temp_list.append(max_temp)
 
     for min in range(7):
-        min_temp = round(api["daily"][min]["temp"]["min"] - 273.13)
+        min_temp = api["daily"][min]["temp"]["min"] - 273.13
         min_temp_list.append(min_temp)
 
     for avg in range(7):
-        avg_temp = (round(api["daily"][avg]["temp"]["max"] - 273.13) + round(api["daily"][avg]["temp"]["min"] - 273.13)) / 2
+        avg_temp = (api["daily"][avg]["temp"]["max"] - 273.13 + api["daily"][avg]["temp"]["min"] - 273.13) / 2
         avg_temp_list.append(avg_temp)
 
+    plt.style.use("ggplot")
     
     plt.plot(weekday_list, max_temp_list, label="Max. Temperature", color="r", marker="o")
     plt.plot(weekday_list, avg_temp_list, label="Avg. Temperature", color="#ffa500", marker="o")
@@ -361,10 +364,51 @@ def statistics_temp():
 
     plt.xlabel("Weekdays")
     plt.ylabel("Temperature (C°)")
-    plt.title("8-day forecast Temperature Graph")
+    plt.title("7-day Temperature forecast Graph")
+    plt.grid(True)
     plt.legend()
+    
 
     plt.show()
+
+#-----------------------------------------------------------------------------------------hourly Forecast
+def statistics_hourly_forecast():
+    api_request_city = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
+                                    + city_name.get() + "&units=metric&appid="+api_key)
+    api_city = json.loads(api_request_city.content)
+    location_x = api_city["coord"]["lon"]
+    location_y = api_city["coord"]["lat"]
+
+    api_request_forecast = requests.get("https://api.openweathermap.org/data/2.5/onecall?lat=" + str(
+        location_y) + "&lon=" + str(location_x) + "&exclude=current,minutely,daily&appid=" + api_key)
+    api = json.loads(api_request_forecast.content)
+    
+
+    temp_list = []
+    hour_list = []
+
+    for temp in range(25):
+        hourly_temp = api["hourly"][temp]["temp"] - 273.13
+        temp_list.append(hourly_temp)
+    
+    current_time = datetime.now()
+    current_hour = current_time.hour
+    hour_list.append(current_hour)
+
+    for hour in range(24):
+        current_hour = (current_hour + 1) % 24  
+        hour_list.append(current_hour)
+
+    xs = range(len(hour_list))
+    plt.plot(xs, temp_list, color="r", marker="o")
+    plt.xticks(xs, hour_list)
+
+    plt.xlabel("Time")
+    plt.ylabel("Temperature (C°)")
+    plt.title("24-hour Temperature Forecast Graph")
+    plt.grid(True)
+
+    plt.show()  
 
 # ----------------------------------------------------------------------------------------set Favourites for standart-view on startup
 def save_as_favorite():
@@ -446,20 +490,20 @@ History.grid(sticky=W, padx=10, pady=5)
 
 
 # ----------------------------------------------------------------------------------------8 Day Forecast Labels
-label_eight_day_forecast = Label(
-    eight_day_forecast_frame, text="8-day forecast", font=("bold", 18), bg="light grey")
-label_day_one = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
-label_day_two = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
-label_day_three = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
-label_day_four = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
-label_day_five = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
-label_day_six = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
-label_day_seven = Label(eight_day_forecast_frame, font=("Calibri", 14), bg="light grey")
-label_day_eight = Label(eight_day_forecast_frame, font=("Calibri", 14),bg="light grey")
+label_seven_day_forecast = Label(
+    seven_day_forecast_frame, text="7-day forecast", font=("bold", 18), bg="light grey")
+label_day_one = Label(seven_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_two = Label(seven_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_three = Label(seven_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_four = Label(seven_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_five = Label(seven_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_six = Label(seven_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_seven = Label(seven_day_forecast_frame, font=("Calibri", 14), bg="light grey")
+label_day_eight = Label(seven_day_forecast_frame, font=("Calibri", 14),bg="light grey")
 forecast_days = [label_day_one, label_day_two, label_day_three, label_day_four,
                  label_day_five, label_day_six, label_day_seven, label_day_eight]
 
-label_eight_day_forecast.grid(row=0, column=0, sticky=W)
+label_seven_day_forecast.grid(row=0, column=0, sticky=W)
 label_day_one.grid(row=1, column=0, sticky=W)
 label_day_two.grid(row=2, column=0, sticky=W)
 label_day_three.grid(row=3, column=0, sticky=W)
@@ -470,12 +514,15 @@ label_day_seven.grid(row=7, column=0, sticky=W)
 label_day_eight.grid(row=8, column=0, sticky=W)
 
 # ----------------------------------------------------------------------------------------Weather Map
-label_statistics = Label(weathermap_frame, text="Statistics", font=("bold", 18), bg="light grey")
-Temperature = Button(weathermap_frame, text="Temperature (C°)", command=statistics_temp)
+label_statistics = Label(statistics_frame, text="Statistics", font=("bold", 18), bg="light grey")
+Temperature_seven_days = Button(statistics_frame, text="7-Day Temperature forecast", command=statistics_seven_day_forecast_temp)
+Temperature_hourly = Button(statistics_frame, text="24-Hour Temperature forecast", command=statistics_hourly_forecast)
 
 
-label_statistics.grid(row=0, column=1)
-Temperature.grid(row=1, column=0, padx=10, pady=5)
+label_statistics.grid(row=0, column=0)
+Temperature_seven_days.grid(row=1, column=0, padx=10, pady=5)
+Temperature_hourly.grid(row=1, column=1, padx=10, pady=5)
+
 
 
 # ----------------------------------------------------------------------------------------load Settings.json
