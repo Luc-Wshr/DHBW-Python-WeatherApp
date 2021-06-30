@@ -47,7 +47,7 @@ statistics_frame['background'] = "light grey"
 
 
 date_time_frame.grid(row=0, column=5, sticky=E, padx=10)
-input_frame.grid(row=0, column=1)
+input_frame.grid(row=0, column=1, sticky=W)
 weather_frame.grid(row=1, rowspan=7, column=0, columnspan=3, sticky=W, padx=10)
 seven_day_forecast_frame.grid(
     row=0, rowspan=9, column=4, columnspan=3, sticky=E, padx=10)
@@ -498,7 +498,7 @@ inpt = Entry(input_frame, width=50, textvariable=city_name)
 inpt.bind("<Return>", search_city)  # bind function to ENTER
 inpt.config(state=DISABLED)
 inpt.bind("<Button-1>", click)
-input_button = Button(input_frame, text="search",
+input_button = Button(input_frame, text="🔎",
                       command=search_city)
 input_label.grid(row=0, column=1, sticky=W)
 inpt.grid(row=0, column=2, sticky=W)
@@ -510,9 +510,10 @@ label_country = Label(weather_frame, textvariable=countryName,
                       font=("bold", 25), bg="light grey")
 
 label_clock = Label(root, font=("Calibri", 20), bg="grey", fg="white")
-Converter = Button(input_frame, text="F°",
+Converter = Button(weather_frame, text="F°",
                    command=celsius_Fahrenheit_converter)
-Favourites = Button(input_frame, text="✰", command=save_as_favorite)
+Favourites = Button(weather_frame, text="✰", command=save_as_favorite)
+Fake_Button = Button(input_frame, text="")
 label_date = Label(date_time_frame, font=(
     "Calibri", 20), bg="grey", fg="white")
 label_clock = Label(date_time_frame, font=(
@@ -534,9 +535,9 @@ weather_description = tkinter.Label(weather_frame, padx=10, pady=5, font=(
 weather_main_description = Label(weather_frame,  padx=10, pady=5, font=(
     "Calibri", 15, ), bg="light grey", fg="black")
 
-
-Converter.grid(row=0, column=5, sticky=E)
-Favourites.grid(row=0, column=6, sticky=E)
+Fake_Button.grid(row=0, column=5)
+Converter.grid(row=8, column=1, sticky=W)
+Favourites.grid(row=8, column=2, sticky=W)
 label_date.grid(row=0, sticky=E)
 label_clock.grid(row=1, sticky=E)
 
@@ -548,7 +549,7 @@ temp_min.grid(row=4, column=0, sticky=W)
 humidity.grid(row=5, column=0, sticky=W)
 weather_description.grid(row=6, column=0, sticky=W, padx=10)
 weather_main_description.grid(row=7, column=0, sticky=W, padx=10)
-History.grid(sticky=W, padx=10, pady=5)
+History.grid(row=8, column=0, sticky=W, padx=10, pady=5)
 
 
 # ----------------------------------------------------------------------------------------7 Day Forecast Labels
