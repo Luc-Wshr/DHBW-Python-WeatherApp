@@ -33,3 +33,6 @@ The User-Inferface was designed as a Wireframe on [draw.io](https://app.diagrams
   - ImageTk
   - Image
 ------------------------------
+- Matplotlib
+  - pyplot
+------------------------------
