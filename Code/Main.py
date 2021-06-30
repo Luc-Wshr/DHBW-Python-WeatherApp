@@ -279,7 +279,7 @@ def weather_history():  # ANCHOR
     close_button.grid(sticky=W, pady=(20, 0))
 
 # ---------------------------------------------------------------------------------------Statistics
-#-------------------------------------------------------------------------------7 day forecast temperature
+#-------------------------------------------------------------------------------7 day temperature forecast
 
 def statistics_seven_day_forecast_temp():
     """this function shows you a graph about the max/min/average temperature for the next 7 days"""
@@ -340,7 +340,7 @@ def statistics_seven_day_forecast_temp():
 
     plt.show()
 
-#-----------------------------------------------------------------------------------------hourly Forecast
+#-----------------------------------------------------------------------------------------hourly temperature Forecast
 def statistics_hourly_forecast():
     """this function shows you a graph about the temperature for the next 24 hours"""
     api_request_city = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
@@ -551,7 +551,7 @@ weather_main_description.grid(row=7, column=0, sticky=W, padx=10)
 History.grid(sticky=W, padx=10, pady=5)
 
 
-# ----------------------------------------------------------------------------------------8 Day Forecast Labels
+# ----------------------------------------------------------------------------------------7 Day Forecast Labels
 label_seven_day_forecast = Label(
     seven_day_forecast_frame, text="7-day forecast", font=("bold", 18), bg="light grey")
 label_day_one = Label(seven_day_forecast_frame, font=("Calibri", 14), bg="light grey")
@@ -575,7 +575,7 @@ label_day_six.grid(row=6, column=0, sticky=W)
 label_day_seven.grid(row=7, column=0, sticky=W)
 label_day_eight.grid(row=8, column=0, sticky=W)
 
-# ----------------------------------------------------------------------------------------Weather Map
+# ----------------------------------------------------------------------------------------Statistics buttons
 label_statistics = Label(statistics_frame, text="Statistics", font=("bold", 18), bg="light grey")
 Temperature_seven_days = Button(statistics_frame, text="7-Day Temperature forecast", command=statistics_seven_day_forecast_temp)
 Temperature_hourly = Button(statistics_frame, text="24-Hour Temperature forecast", command=statistics_hourly_forecast)
