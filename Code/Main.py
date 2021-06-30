@@ -302,12 +302,7 @@ def statistics_seven_day_forecast_temp():
     }
     today = date.today()
     today_weekday = today.weekday()
-    days = []
-    for i in range(7):
-        tdelta = timedelta(days=1 + i)
-        new_time = today + tdelta
-        new_time_day = new_time.day
-        days.append(new_time_day)
+    
    
     weekday_list = []
     max_temp_list = []
@@ -374,6 +369,8 @@ def statistics_hourly_forecast():
         current_hour = (current_hour + 1) % 24  
         hour_list.append(current_hour)
 
+    plt.style.use("ggplot")
+
     xs = range(len(hour_list))
     plt.plot(xs, temp_list, color="r", marker="o")
     plt.xticks(xs, hour_list)
@@ -383,7 +380,97 @@ def statistics_hourly_forecast():
     plt.title("24-hour Temperature Forecast Graph")
     plt.grid(True)
 
-    plt.show()  
+    plt.show()
+
+#-----------------------------------------------------------------------------------------hourly Rain Probability
+def statistics_hourly_rain_probability():
+    """this function shows you a graph about the probability for raining for the next 24 hours"""
+
+    api_request_city = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
+                                    + city_name.get() + "&units=metric&appid="+api_key)
+    api_city = json.loads(api_request_city.content)
+    location_x = api_city["coord"]["lon"]
+    location_y = api_city["coord"]["lat"]
+
+    api_request_forecast = requests.get("https://api.openweathermap.org/data/2.5/onecall?lat=" + str(
+        location_y) + "&lon=" + str(location_x) + "&exclude=current,minutely,daily&appid=" + api_key)
+    api = json.loads(api_request_forecast.content)  
+
+    hour_list = []
+    probability_list = []
+
+    for prob in range(25):
+        hourly_prob = api["hourly"][prob]["pop"] * 100
+        probability_list.append(int(hourly_prob))
+
+    current_time = datetime.now()
+    current_hour = current_time.hour
+    hour_list.append(current_hour)
+
+    for hour in range(24):
+        current_hour = (current_hour + 1) % 24  
+        hour_list.append(current_hour)
+
+    plt.style.use("ggplot")
+
+    xs = range(len(hour_list))
+    plt.bar(xs, probability_list, color="b")
+    plt.xticks(xs, hour_list)
+    plt.xlabel("Time")
+    plt.ylabel("Probability of Rain (%)")
+    plt.title("24-Hour Rain Probability Graph")
+    plt.grid(True)
+
+    plt.show()
+
+#-----------------------------------------------------------------------------------------7 day Rain Probability
+def statistics_7_day_rain_probability():
+    """this function shows you a graph about the probability for raining for the next 7 days"""
+
+    api_request_city = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
+                                    + city_name.get() + "&units=metric&appid="+api_key)
+    api_city = json.loads(api_request_city.content)
+    location_x = api_city["coord"]["lon"]
+    location_y = api_city["coord"]["lat"]
+
+    api_request_forecast = requests.get("https://api.openweathermap.org/data/2.5/onecall?lat=" + str(
+        location_y) + "&lon=" + str(location_x) + "&exclude=current,minutely,hourly&appid=" + api_key)
+    api = json.loads(api_request_forecast.content)  
+
+    weekday_list = []
+    probability_list = []
+
+    for prob in range(7):
+        hourly_prob = api["daily"][prob]["pop"] * 100
+        probability_list.append(int(hourly_prob))
+
+    weekdays = {
+        0: "Monday",
+        1: "Tuesday",
+        2: "Wednesday",
+        3: "Thursday",
+        4: "Friday",
+        5: "Saturday",
+        6: "Sunday"
+    }
+    today = date.today()
+    today_weekday = today.weekday()
+
+    for i in range(7):
+        weekday = weekdays[(today_weekday + i) % 7]
+        weekday_list.append(weekday)
+
+    plt.style.use("ggplot")
+
+    xs = range(len(weekday_list))
+    plt.bar(xs, probability_list, color="b")
+    plt.xticks(xs, weekday_list)
+    plt.xlabel("Weekdays")
+    plt.ylabel("Probability of Rain (%)")
+    plt.title("7-Days Rain Probability Graph")
+    plt.grid(True)
+
+    plt.show()
 
 # ----------------------------------------------------------------------------------------set Favourites for standart-view on startup
 def save_as_favorite():
@@ -492,11 +579,16 @@ label_day_eight.grid(row=8, column=0, sticky=W)
 label_statistics = Label(statistics_frame, text="Statistics", font=("bold", 18), bg="light grey")
 Temperature_seven_days = Button(statistics_frame, text="7-Day Temperature forecast", command=statistics_seven_day_forecast_temp)
 Temperature_hourly = Button(statistics_frame, text="24-Hour Temperature forecast", command=statistics_hourly_forecast)
+Rain_probability_7_days = Button(statistics_frame, text="7-Day Rain Probability", command=statistics_7_day_rain_probability)
+Rain_probability_24_hours = Button(statistics_frame, text="24-Hour Rain Probability", command=statistics_hourly_rain_probability)
 
 
 label_statistics.grid(row=0, column=0)
-Temperature_seven_days.grid(row=1, column=0, padx=10, pady=5)
-Temperature_hourly.grid(row=1, column=1, padx=10, pady=5)
+Temperature_seven_days.grid(row=1, column=0, sticky=W, padx=10, pady=5)
+Temperature_hourly.grid(row=1, column=1, sticky=W, padx=10, pady=5)
+Rain_probability_7_days.grid(row=2, column=0, sticky=W, padx=10, pady=5)
+Rain_probability_24_hours.grid(row=2, column=1, sticky=W, padx=10, pady=5)
+
 
 
 
