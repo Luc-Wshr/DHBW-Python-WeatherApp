@@ -373,6 +373,7 @@ def statistics_seven_day_forecast_temp():
 
 #-----------------------------------------------------------------------------------------hourly Forecast
 def statistics_hourly_forecast():
+    """this function shows you a graph about the temperature for the next 24 hours"""
     api_request_city = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                     + city_name.get() + "&units=metric&appid="+api_key)
     api_city = json.loads(api_request_city.content)
