@@ -11,6 +11,7 @@ import tkinter
 import json
 import requests
 import time
+from matplotlib import pyplot as plt
  
 
 # ----------------------------------------------------------------------------------------root details
@@ -40,18 +41,18 @@ weathermap_frame = Frame(root)
 
 weather_frame['background'] = "light grey"
 eight_day_forecast_frame['background'] = "light grey"
-input_frame.grid(row=1, column=0, columnspan=2, sticky=W)
-weather_frame.grid(row=2, rowspan=2, column=0, columnspan=2, sticky=W)
-weathermap_frame.grid(row=3, column=4)
-eight_day_forecast_frame.grid(row=2, column=4)
+weathermap_frame['background'] = "light grey"
+
 date_time_frame.grid(row=0, column=6, sticky=E)
+
+
 
 
 input_frame.grid(row=0, column=1)
 weather_frame.grid(row=1, rowspan=7, column=0, columnspan=3, sticky=W)
 eight_day_forecast_frame.grid(
-    row=1, rowspan=9, column=4, columnspan=3, sticky=E)
-weathermap_frame.grid(row=2, column=2)
+    row=0, rowspan=9, column=4, columnspan=3, sticky=E)
+weathermap_frame.grid(row=3, column=3, columnspan=3)
 # ----------------------------------------------------------------------------------------Key-values
 api_key = "12f04c87d16f8e311477842c595d4c77"
 countryName = StringVar()
@@ -174,7 +175,6 @@ def search_city(event=None):
         weather_description.configure(image=icon)
         weather_description.image = icon
         eight_day_forecast()
-        weather_map()
         inpt.config(state=DISABLED)
     else:
         city_print.set(" City not found")
@@ -274,7 +274,7 @@ def weather_history():  # ANCHOR
     five_days_history_frame = Frame(
         root, highlightbackground="black", highlightthickness=1)
     five_days_history_frame['background'] = "light grey"
-    five_days_history_frame.grid(row=2, column=2, sticky=W,)
+    five_days_history_frame.grid(row=2, column=1, sticky=W,)
     history_title = Label(five_days_history_frame,
                           text="5-days-history", font=('bold', 18), bg="light grey")
     history_title.grid(sticky=NW)
@@ -304,14 +304,67 @@ def weather_history():  # ANCHOR
 # ---------------------------------------------------------------------------------------Weather map
 
 
-def weather_map():
+def statistics_temp():
     api_request = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                + city_name.get() + "&units=metric&appid="+api_key)
     api = json.loads(api_request.content)
     location_x = api["coord"]["lon"]
     location_y = api["coord"]["lat"]
+    api_request_forecast = requests.get("https://api.openweathermap.org/data/2.5/onecall?lat=" + str(
+        location_y) + "&lon=" + str(location_x) + "&exclude=current,minutely,hourly&appid=" + api_key)
+    api = json.loads(api_request_forecast.content)
+    weekdays = {
+        0: "Monday",
+        1: "Tuesday",
+        2: "Wednesday",
+        3: "Thursday",
+        4: "Friday",
+        5: "Saturday",
+        6: "Sunday"
+    }
+    today = date.today()
+    today_month = today.month
+    today_day = today.day
+    today_weekday = today.weekday()
+    days = []
+    for i in range(7):
+        tdelta = timedelta(days=1 + i)
+        new_time = today + tdelta
+        new_time_day = new_time.day
+        days.append(new_time_day)
+    #print(len(api["daily"]))
+    weekday_list = []
+    max_temp_list = []
+    min_temp_list = []
+    avg_temp_list = []
 
+    for i in range(7):
+        weekday = weekdays[(today_weekday + i) % 7]
+        weekday_list.append(weekday)
 
+    for max in range(7):
+        max_temp = round(api["daily"][max]["temp"]["max"] - 273.13)
+        max_temp_list.append(max_temp)
+
+    for min in range(7):
+        min_temp = round(api["daily"][min]["temp"]["min"] - 273.13)
+        min_temp_list.append(min_temp)
+
+    for avg in range(7):
+        avg_temp = (round(api["daily"][avg]["temp"]["max"] - 273.13) + round(api["daily"][avg]["temp"]["min"] - 273.13)) / 2
+        avg_temp_list.append(avg_temp)
+
+    
+    plt.plot(weekday_list, max_temp_list, label="Max. Temperature", color="r", marker="o")
+    plt.plot(weekday_list, avg_temp_list, label="Avg. Temperature", color="#ffa500", marker="o")
+    plt.plot(weekday_list, min_temp_list, label="Min. Temperature", color="b", marker="o")
+
+    plt.xlabel("Weekdays")
+    plt.ylabel("Temperature (C°)")
+    plt.title("8-day forecast Temperature Graph")
+    plt.legend()
+
+    plt.show()
 
 # ----------------------------------------------------------------------------------------set Favourites for standart-view on startup
 def save_as_favorite():
@@ -324,7 +377,6 @@ def save_as_favorite():
 
 # ----------------------------------------------------------------------------------------Image
 mytime = time.localtime()
-print(mytime)
 if mytime.tm_hour < 6 or mytime.tm_hour > 18:
     img = ImageTk.PhotoImage(Image.open("Code/settings/Logo_Python_night.png"))
 else:
@@ -418,13 +470,12 @@ label_day_seven.grid(row=7, column=0, sticky=W)
 label_day_eight.grid(row=8, column=0, sticky=W)
 
 # ----------------------------------------------------------------------------------------Weather Map
-#img = ImageTk.PhotoImage(Image.open("MyMap.html"))
-#weathermap = Label(weathermap_frame, image=img)
+label_statistics = Label(weathermap_frame, text="Statistics", font=("bold", 18), bg="light grey")
+Temperature = Button(weathermap_frame, text="Temperature (C°)", command=statistics_temp)
 
 
-
-
-#weathermap.grid(row=1, column=1)
+label_statistics.grid(row=0, column=1)
+Temperature.grid(row=1, column=0, padx=10, pady=5)
 
 
 # ----------------------------------------------------------------------------------------load Settings.json
