@@ -65,7 +65,7 @@ def celsius_Fahrenheit_converter():
     api_request = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                + city_name.get() + "&units=metric&appid="+api_key)
     api = json.loads(api_request.content)
-    main = api['main']  # temperatures and humidity
+    main = api['main']  
     # ------------------------------------------------------------------Celsius
     if(Converter['text'] == "C°"):
         Converter['text'] = 'F°'
@@ -86,8 +86,9 @@ def celsius_Fahrenheit_converter():
 # ---------------------------------------------------------------------------------------- UNIX converter
 
 
-# TODO: nur "date" im Moment. Für "datetime" noch überarbeiten
+
 def convert_unix(dt):
+    """converts unix code"""
     timestamp = (dt - date(1970, 1, 1)).total_seconds()
     return(int(timestamp))
 
@@ -95,6 +96,7 @@ def convert_unix(dt):
 
 
 def get_past_date(x):
+    """calculates date of yesterday"""
     yesterday = date.today() - timedelta(days=x)
     return(yesterday)
 # ----------------------------------------------------------------------------------------Hour-clock
@@ -225,6 +227,7 @@ def seven_day_forecast():
 # ---------------------------------------------------------------------------------------5 days history
 
 def weather_history():  # ANCHOR
+    """shows 5 days weather history of selected location"""
     api_request_city = requests.get("https://api.openweathermap.org/data/2.5/weather?q="
                                     + city_name.get() + "&units=metric&appid="+api_key)
     api_city = json.loads(api_request_city.content)
@@ -271,6 +274,7 @@ def weather_history():  # ANCHOR
 
 # ---function for the close_button
     def close_button_cmd():
+        """closes weather history window"""
         five_days_history_frame.destroy()
         History.configure(state=ACTIVE)
 
